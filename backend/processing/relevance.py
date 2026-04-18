@@ -1,7 +1,7 @@
 import numpy as np
 
-from config import settings
-from models import Article
+from backend.config import settings
+from backend.models import Article
 
 from .embeddings import cosine_similarity, embed_texts
 

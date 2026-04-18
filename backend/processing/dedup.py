@@ -1,7 +1,7 @@
 import numpy as np
 
-from config import settings
-from models import Article
+from backend.config import settings
+from backend.models import Article
 
 
 def deduplicate(articles: list[Article], embeddings: np.ndarray) -> tuple[list[Article], np.ndarray]:

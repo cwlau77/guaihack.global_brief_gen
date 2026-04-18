@@ -3,8 +3,8 @@ from typing import Optional
 
 import httpx
 
-from config import settings
-from models import Article
+from backend.config import settings
+from backend.models import Article
 
 GDELT_DOC_API = "https://api.gdeltproject.org/api/v2/doc/doc"
 

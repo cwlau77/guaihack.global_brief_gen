@@ -1,12 +1,14 @@
+from typing import Optional
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    anthropic_api_key: str
-    newsapi_key: str
-    huggingface_api_key: str
+    anthropic_api_key: Optional[str] = None
+    newsapi_key: Optional[str] = None
+    huggingface_api_key: Optional[str] = None
 
     max_articles_per_source: int = 25
     dedup_similarity_threshold: float = 0.85

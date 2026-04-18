@@ -1,25 +1,27 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Optional
 
 import httpx
 
-from config import settings
-from models import Article
+from backend.config import settings
+from backend.models import Article
 
 NEWSAPI_EVERYTHING = "https://newsapi.org/v2/everything"
 
 
 async def fetch_newsapi(focus: str, client: Optional[httpx.AsyncClient] = None) -> list[Article]:
     """Query NewsAPI /everything for the focus phrase across the lookback window."""
+    if not settings.newsapi_key:
+        return []
+
     owns_client = client is None
     if owns_client:
         client = httpx.AsyncClient(timeout=20.0)
 
-    since = datetime.now(timezone.utc) - timedelta(hours=settings.hours_lookback)
-
+    # NOTE: free-tier NewsAPI delays articles by 24h, so we do not apply a `from` filter here;
+    # we rely on sortBy=publishedAt to get the newest articles available to our plan.
     params = {
         "q": focus,
-        "from": since.isoformat(timespec="seconds"),
         "language": "en",
         "sortBy": "publishedAt",
         "pageSize": settings.max_articles_per_source,

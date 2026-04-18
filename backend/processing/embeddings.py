@@ -3,10 +3,10 @@ from typing import Optional
 import httpx
 import numpy as np
 
-from config import settings
+from backend.config import settings
 
 HF_FEATURE_EXTRACTION_URL = (
-    f"https://api-inference.huggingface.co/pipeline/feature-extraction/{settings.embedding_model}"
+    f"https://api-inference.huggingface.co/models/{settings.embedding_model}"
 )
 
 
@@ -16,6 +16,8 @@ async def embed_texts(texts: list[str], client: Optional[httpx.AsyncClient] = No
     Returns a 2D numpy array of shape (len(texts), hidden_size). Returns an empty array on failure.
     """
     if not texts:
+        return np.zeros((0, 0), dtype=np.float32)
+    if not settings.huggingface_api_key:
         return np.zeros((0, 0), dtype=np.float32)
 
     owns_client = client is None

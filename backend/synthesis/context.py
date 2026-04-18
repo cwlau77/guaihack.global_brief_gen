@@ -2,8 +2,8 @@ import asyncio
 
 from anthropic import AsyncAnthropic
 
-from config import settings
-from models import Briefing, KeyDevelopment
+from backend.config import settings
+from backend.models import Briefing, KeyDevelopment
 
 CONTEXT_SYSTEM_PROMPT = """You are a concise historical briefer for international-affairs students.
 Given a news headline and summary, write ONE short paragraph (2-4 sentences) of historical and
@@ -36,7 +36,7 @@ async def _context_for_development(client: AsyncAnthropic, dev: KeyDevelopment) 
 
 async def enrich_with_historical_context(briefing: Briefing) -> Briefing:
     """Attach a short Haiku-generated historical-context paragraph to each key development."""
-    if not briefing.key_developments:
+    if not briefing.key_developments or not settings.anthropic_api_key:
         return briefing
 
     client = AsyncAnthropic(api_key=settings.anthropic_api_key)

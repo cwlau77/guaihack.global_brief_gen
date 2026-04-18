@@ -1,10 +1,12 @@
 import json
+import re
+from collections import Counter
 from datetime import datetime, timezone
 
 from anthropic import AsyncAnthropic
 
-from config import settings
-from models import (
+from backend.config import settings
+from backend.models import (
     Article,
     Briefing,
     Contradiction,
@@ -127,15 +129,132 @@ def _parse_citations(raw: list[dict]) -> list[SourceCitation]:
     return out
 
 
+def _fallback_citations(articles: list[Article], limit: int = 3) -> list[SourceCitation]:
+    return [
+        SourceCitation(outlet=article.source, url=article.url, published_at=article.published_at)
+        for article in articles[:limit]
+    ]
+
+
+def _infer_regions(article: Article, focus: str) -> list[str]:
+    tokens = re.findall(r"[A-Za-z][A-Za-z\-]+", f"{focus} {article.title}")
+    stopwords = {
+        "the", "and", "for", "with", "from", "into", "amid", "after", "before", "global",
+        "policy", "briefing", "daily", "major", "world", "update", "over", "news"
+    }
+    regions: list[str] = []
+    for token in tokens:
+        if token.lower() in stopwords:
+            continue
+        if token[0].isupper() and token not in regions:
+            regions.append(token)
+    if article.country and article.country not in regions:
+        regions.append(article.country)
+    return regions[:4] or [focus]
+
+
+def _fallback_briefing(focus: str, articles: list[Article]) -> Briefing:
+    sorted_articles = sorted(
+        articles,
+        key=lambda article: article.published_at or datetime.min.replace(tzinfo=timezone.utc),
+        reverse=True,
+    )
+    article_count = len(sorted_articles)
+    top_articles = sorted_articles[: min(4, article_count)]
+
+    key_developments = [
+        KeyDevelopment(
+            headline=article.title[:120],
+            summary=(
+                f"{article.snippet or article.title} "
+                f"This item is included because it appears prominently across the latest reporting tied to {focus}."
+            ).strip(),
+            regions=_infer_regions(article, focus),
+            sources=_fallback_citations([article]),
+        )
+        for article in top_articles
+    ]
+
+    tension_keywords = ("conflict", "tension", "sanction", "military", "strike", "protest", "dispute", "ceasefire")
+    tension_articles = [
+        article for article in sorted_articles
+        if any(keyword in f"{article.title} {article.snippet}".lower() for keyword in tension_keywords)
+    ][:3]
+    emerging_tensions = [
+        Tension(
+            description=(
+                f"{article.title}. {article.snippet or 'Recent coverage suggests a potentially fast-moving situation.'}"
+            ).strip(),
+            actors=_infer_regions(article, focus),
+            sources=_fallback_citations([article]),
+        )
+        for article in tension_articles
+    ]
+
+    alert_keywords = ("war", "attack", "crisis", "sanction", "emergency", "tariff", "election", "ceasefire")
+    priority_alerts = []
+    for article in sorted_articles:
+        if not any(keyword in f"{article.title} {article.snippet}".lower() for keyword in alert_keywords):
+            continue
+        severity = "critical" if any(word in article.title.lower() for word in ("war", "attack", "emergency")) else "high"
+        priority_alerts.append(
+            PriorityAlert(
+                severity=severity,
+                headline=article.title[:120],
+                rationale=(
+                    f"This development may alter the near-term outlook for {focus} and warrants closer monitoring."
+                ),
+                sources=_fallback_citations([article]),
+            )
+        )
+        if len(priority_alerts) == 3:
+            break
+
+    recommended_readings = [
+        RecommendedReading(
+            title=article.title,
+            outlet=article.source,
+            url=article.url,
+            why=f"Use this piece to verify the reporting directly from {article.source}.",
+        )
+        for article in sorted_articles[: min(5, article_count)]
+    ]
+
+    if not recommended_readings:
+        recommended_readings = [
+            RecommendedReading(
+                title=article.title,
+                outlet=article.source,
+                url=article.url,
+                why="Use this piece as a starting point for source verification.",
+            )
+            for article in top_articles
+        ]
+
+    return Briefing(
+        focus=focus,
+        generated_at=datetime.now(timezone.utc),
+        key_developments=key_developments,
+        emerging_tensions=emerging_tensions,
+        contradictions=[],
+        priority_alerts=priority_alerts,
+        recommended_readings=recommended_readings,
+        article_count=article_count,
+        source_breakdown=dict(Counter(article.raw_source_type for article in articles)),
+    )
+
+
 async def synthesize_briefing(focus: str, articles: list[Article]) -> Briefing:
     """Run the main Claude Sonnet synthesis pass and return a Briefing."""
+    if not settings.anthropic_api_key:
+        return _fallback_briefing(focus, articles)
+
     client = AsyncAnthropic(api_key=settings.anthropic_api_key)
 
     response = await client.messages.create(
         model=settings.synthesis_model,
         max_tokens=8000,
         system=SYSTEM_PROMPT,
-        thinking={"type": "adaptive"},
         messages=[{"role": "user", "content": _build_user_prompt(focus, articles)}],
     )
 

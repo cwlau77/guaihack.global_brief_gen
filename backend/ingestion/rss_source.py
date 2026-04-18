@@ -1,22 +1,22 @@
 import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from time import mktime
 
 import feedparser
 
-from config import settings
-from models import Article
+from backend.config import settings
+from backend.models import Article
 
 RSS_FEEDS: list[tuple[str, str]] = [
     ("BBC World", "https://feeds.bbci.co.uk/news/world/rss.xml"),
     ("Al Jazeera", "https://www.aljazeera.com/xml/rss/all.xml"),
-    ("Reuters World", "https://feeds.reuters.com/Reuters/worldNews"),
+    ("The Guardian World", "https://www.theguardian.com/world/rss"),
+    ("NPR World", "https://feeds.npr.org/1004/rss.xml"),
 ]
 
 
 def _parse_feed(outlet: str, url: str) -> list[Article]:
     parsed = feedparser.parse(url)
-    since = datetime.now(timezone.utc) - timedelta(hours=settings.hours_lookback)
 
     articles: list[Article] = []
     for entry in parsed.entries[: settings.max_articles_per_source]:
@@ -33,9 +33,6 @@ def _parse_feed(outlet: str, url: str) -> list[Article]:
                 published_at = datetime.fromtimestamp(mktime(struct_time), tz=timezone.utc)
             except Exception:
                 published_at = None
-
-        if published_at and published_at < since:
-            continue
 
         articles.append(
             Article(

@@ -1,0 +1,12 @@
+.DS_Store
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+backend/.env
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+guaihack.global_brief_gen/
+.claude/

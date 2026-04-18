@@ -1,17 +1,20 @@
 import asyncio
 import logging
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
-from ingestion import fetch_gdelt, fetch_newsapi, fetch_rss
-from models import Article, Briefing, BriefingRequest
-from processing import deduplicate, embed_texts, filter_by_relevance
-from synthesis import enrich_with_historical_context, synthesize_briefing
+from backend.ingestion import fetch_gdelt, fetch_newsapi, fetch_rss
+from backend.models import Article, Briefing, BriefingRequest
+from backend.processing import deduplicate, embed_texts, filter_by_relevance
+from backend.synthesis import enrich_with_historical_context, synthesize_briefing
 
 logger = logging.getLogger("briefing")
 logging.basicConfig(level=logging.INFO)
+FRONTEND_INDEX = Path(__file__).resolve().parent.parent / "index.html"
 
 app = FastAPI(title="Global Briefing Generator", version="0.1.0")
 
@@ -27,6 +30,11 @@ app.add_middleware(
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/", include_in_schema=False)
+async def index() -> FileResponse:
+    return FileResponse(FRONTEND_INDEX)
 
 
 async def _ingest_all(focus: str) -> list[Article]:
