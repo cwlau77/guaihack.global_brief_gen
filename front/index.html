@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Briefing Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #f59e0b;
+            --alert-urgent: #dc2626;
+            --alert-warning: #f59e0b;
+            --alert-info: #06b6d4;
+            --success-color: #10b981;
+            --background: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Input Section */
+        .input-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .input-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-generate {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-generate:hover {
+            background-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-generate:active {
+            transform: scale(0.98);
+        }
+
+        .btn-clear {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-clear:hover {
+            background-color: #d1d5db;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alerts Section */
+        .alerts-section {
+            margin-bottom: 2rem;
+        }
+
+        .alerts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .alert-card {
+            background: var(--card-bg);
+            border-left: 4px solid;
+            padding: 1.5rem;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .alert-card.urgent {
+            border-left-color: var(--alert-urgent);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .alert-card.warning {
+            border-left-color: var(--alert-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .alert-card.info {
+            border-left-color: var(--alert-info);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .alert-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .alert-card.urgent .alert-badge {
+            background-color: var(--alert-urgent);
+            color: white;
+        }
+
+        .alert-card.warning .alert-badge {
+            background-color: var(--alert-warning);
+            color: white;
+        }
+
+        .alert-card.info .alert-badge {
+            background-color: var(--alert-info);
+            color: white;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .alert-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .alert-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content */
+        .briefing-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .briefing-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .briefing-subsection {
+            margin-bottom: 1.5rem;
+        }
+
+        .briefing-subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subsection-icon {
+            font-size: 1.3rem;
+        }
+
+        /* News Item */
+        .news-item {
+            background: var(--background);
+            border-left: 3px solid var(--secondary-color);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .news-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(4px);
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .news-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .priority-badge.high {
+            background-color: var(--alert-urgent);
+            color: white;
+        }
+
+        .priority-badge.medium {
+            background-color: var(--alert-warning);
+            color: white;
+        }
+
+        .priority-badge.low {
+            background-color: var(--alert-info);
+            color: white;
+        }
+
+        .news-content {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .news-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .source-info {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .source {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .source-badge {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Tension Map */
+        .tension-map {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .tension-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tension-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .tension-actors {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .tension-indicator {
+            width: 100px;
+            height: 8px;
+            background: linear-gradient(90deg, var(--alert-info) 0%, var(--alert-warning) 50%, var(--alert-urgent) 100%);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .tension-level {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .tension-level.low {
+            background: var(--alert-info);
+            left: 0;
+        }
+
+        .tension-level.medium {
+            background: var(--alert-warning);
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .tension-level.high {
+            background: var(--alert-urgent);
+            right: 0;
+            left: auto;
+        }
+
+        /* Reading List */
+        .reading-list {
+            list-style: none;
+        }
+
+        .reading-item {
+            background: var(--background);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: all 0.3s;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .reading-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .reading-content {
+            flex: 1;
+        }
+
+        .reading-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .reading-publication {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .reading-link {
+            display: inline-block;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: background 0.3s;
+        }
+
+        .reading-link:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-group {
+                flex-direction: column;
+            }
+
+            .input-wrapper {
+                width: 100%;
+            }
+
+            .button-group {
+                width: 100%;
+            }
+
+            button {
+                flex: 1;
+            }
+
+            .news-header {
+                flex-direction: column;
+            }
+
+            .priority-badge {
+                align-self: flex-start;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .input-section,
+            .briefing-section {
+                padding: 1.5rem;
+            }
+
+            .alerts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            opacity: 0.9;
+        }
+
+        /* Summary Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <h1>🌍 Global Briefing Generator</h1>
+            <p class="tagline">Stay informed on international developments tailored to your interests</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Input Section -->
+        <section class="input-section">
+            <h2>Customize Your Briefing</h2>
+            <form id="briefingForm">
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <label for="areaOfFocus">Area of Focus</label>
+                        <input
+                            type="text"
+                            id="areaOfFocus"
+                            placeholder="e.g., Middle East Policy, Climate Change, Southeast Asian Trade"
+                            required
+                        >
+                    </div>
+                    <div class="input-wrapper" style="min-width: 150px;">
+                        <label for="updateFrequency">Update Frequency</label>
+                        <select id="updateFrequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="biweekly">Bi-weekly</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn-generate">Generate Briefing</button>
+                        <button type="reset" class="btn-clear">Clear</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Content Container -->
+        <div id="contentContainer"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Global Briefing Generator. Powered by AI with aggregated international news sources.</p>
+    </footer>
+
+    <script>
+        // Generate sample briefing with mock data
+        function generateBriefing(areaOfFocus, frequency) {
+            return {
+                area: areaOfFocus,
+                date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                frequency: frequency,
+                stats: {
+                    articles: 24,
+                    sources: 8,
+                    regions: 5,
+                    alerts: 3
+                },
+                alerts: [
+                    {
+                        id: 1,
+                        type: 'urgent',
+                        title: 'Critical Development',
+                        description: 'Major policy announcement affecting regional relations and international cooperation frameworks',
+                        time: '2 hours ago'
+                    },
+                    {
+                        id: 2,
+                        type: 'warning',
+                        title: 'Emerging Tension',
+                        description: 'Escalating diplomatic dispute between key actors over trade and security concerns',
+                        time: '4 hours ago'
+                    },
+                    {
+                        id: 3,
+                        type: 'info',
+                        title: 'Regional Update',
+                        description: 'Economic data release impacts market outlook and investor confidence',
+                        time: '6 hours ago'
+                    }
+                ],
+                keyDevelopments: [
+                    {
+                        id: 1,
+                        title: 'Major Policy Announcement Regarding ' + areaOfFocus,
+                        content: 'Government announces sweeping reforms affecting international trade relations. The announcement comes amid ongoing negotiations with neighboring countries and addresses key concerns raised by stakeholders.',
+                        priority: 'high',
+                        sources: ['Reuters', 'AP News'],
+                        timestamp: '2 hours ago'
+                    },
+                    {
+                        id: 2,
+                        title: 'Economic Indicators Show Significant Growth',
+                        content: 'Latest quarterly economic data shows growth in critical sectors. Analysis suggests long-term implications for regional stability and market volatility patterns.',
+                        priority: 'medium',
+                        sources: ['Bloomberg', 'Financial Times'],
+                        timestamp: '4 hours ago'
+                    },
+                    {
+                        id: 3,
+                        title: 'High-Level Diplomatic Engagement',
+                        content: 'Officials meet to discuss ongoing disputes and potential collaborative initiatives. Talks described as productive by both delegations with multiple rounds planned.',
+                        priority: 'medium',
+                        sources: ['BBC', 'DW'],
+                        timestamp: '6 hours ago'
+                    },
+                    {
+                        id: 4,
+                        title: 'Infrastructure Development Project Announcement',
+                        content: 'New regional infrastructure project unveiled to boost connectivity and economic cooperation. Expected to create thousands of jobs and strengthen ties.',
+                        priority: 'low',
+                        sources: ['Reuters', 'The Guardian'],
+                        timestamp: '8 hours ago'
+                    }
+                ],
+                emerginTensions: [
+                    {
+                        id: 1,
+                        actors: 'Nation A ↔ Nation B',
+                        level: 'high',
+                        description: 'Trade dispute escalation over tariffs'
+                    },
+                    {
+                        id: 2,
+                        actors: 'Regional Alliance ↔ Nation C',
+                        level: 'medium',
+                        description: 'Security concerns and military posturing'
+                    },
+                    {
+                        id: 3,
+                        actors: 'Nation D ↔ Nation E',
+                        level: 'low',
+                        description: 'Border demarcation discussions ongoing'
+                    },
+                    {
+                        id: 4,
+                        actors: 'Bloc 1 ↔ Bloc 2',
+                        level: 'medium',
+                        description: 'Competing economic integration efforts'
+                    }
+                ],
+                readingList: [
+                    {
+                        id: 1,
+                        title: 'Deep Dive: Understanding the Current Geopolitical Crisis',
+                        publication: 'International Affairs Quarterly',
+                        link: '#'
+                    },
+                    {
+                        id: 2,
+                        title: 'Regional Economic Outlook for Next Quarter',
+                        publication: 'Global Economic Forum',
+                        link: '#'
+                    },
+                    {
+                        id: 3,
+                        title: 'Historical Context: A 10-Year Analysis',
+                        publication: 'Policy Research Institute',
+                        link: '#'
+                    },
+                    {
+                        id: 4,
+                        title: 'Strategic Implications for Regional Powers',
+                        publication: 'Foreign Policy Review',
+                        link: '#'
+                    },
+                    {
+                        id: 5,
+                        title: 'Market Analysis: Investor Sentiment Report',
+                        publication: 'Financial Intelligence Daily',
+                        link: '#'
+                    }
+                ]
+            };
+        }
+
+        // Render briefing
+        function renderBriefing(data) {
+            let html = '';
+
+            // Stats Section
+            html += `
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.articles}</div>
+                        <div class="stat-label">Articles Aggregated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.sources}</div>
+                        <div class="stat-label">News Sources</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.regions}</div>
+                        <div class="stat-label">Regions Covered</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.alerts}</div>
+                        <div class="stat-label">Priority Alerts</div>
+                    </div>
+                </div>
+            `;
+
+            // Priority Alerts
+            html += `
+                <section class="alerts-section">
+                    <h2 style="margin-bottom: 1rem; color: var(--primary-color); font-size: 1.3rem;">🚨 Priority Alerts</h2>
+                    <div class="alerts-container">
+            `;
+            
+            data.alerts.forEach(alert => {
+                html += `
+                    <div class="alert-card ${alert.type}">
+                        <div class="alert-badge">${alert.type === 'urgent' ? '⚠️ URGENT' : alert.type === 'warning' ? '⚠️ WARNING' : 'ℹ️ INFO'}</div>
+                        <div class="alert-title">${alert.title}</div>
+                        <div class="alert-description">${alert.description}</div>
+                        <div class="alert-meta">${alert.time}</div>
+                    </div>
+                `;
+            });
+
+            html += `</div></section>`;
+
+            // Key Developments
+            html += `
+                <section class="briefing-section">
+                    <h2>📰 Key Developments</h2>
+                    <div class="briefing-subsection">
+            `;
+
+            data.keyDevelopments.forEach(item => {
+                html += `
+                    <div class="news-item">
+                        <div class="news-header">
+                            <div class="news-title">${item.title}</div>
+                            <span class="priority-badge ${item.priority}">${item.priority.toUpperCase()}</span>
+                        </div>
+                        <div class="news-content">${item.content}</div>
+                        <div class="news-footer">
+                            <div class="source-info">
+                                ${item.sources.map(src => `<span class="source"><span class="source-badge">${src}</span></span>`).join('')}
+                            </div>
+                            <span class="timestamp">${item.timestamp}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></section>`;
+
+            // Emerging Tensions
+            html += `
+                <section class="briefing-section">
+                    <h2>⚡ Emerging Tensions & Regional Dynamics</h2>
+                    <div class="tension-map">
+            `;
+
+            data.emerginTensions.forEach(item => {
+                let levelPercentage = item.level === 'high' ? 100 : item.level === 'medium' ? 50 : 25;
+                html += `
+                    <div class="tension-item">
+                        <div class="tension-actors">${item.actors}</div>
+                        <div class="tension-indicator">
+                            <div class="tension-level ${item.level}"></div>
+                        </div>
+                        <div style="min-width: 80px; text-align: right; font-size: 0.9rem; color: var(--text-secondary);">${item.description}</div>
+                    </div>
+                `;
+            });
+
+            html += `</div></section>`;
+
+            // Recommended Readings
+            html += `
+                <section class="briefing-section">
+                    <h2>📚 Recommended Readings</h2>
+                    <ul class="reading-list">
+            `;
+
+            data.readingList.forEach(item => {
+                html += `
+                    <li class="reading-item">
+                        <div class="reading-content">
+                            <div class="reading-title">${item.title}</div>
+                            <div class="reading-publication">${item.publication}</div>
+                        </div>
+                        <a href="${item.link}" class="reading-link">Read More →</a>
+                    </li>
+                `;
+            });
+
+            html += `</ul></section>`;
+
+            return html;
+        }
+
+        // Form submission
+        document.getElementById('briefingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const areaOfFocus = document.getElementById('areaOfFocus').value.trim();
+            const frequency = document.getElementById('updateFrequency').value;
+            const contentContainer = document.getElementById('contentContainer');
+
+            if (!areaOfFocus) {
+                contentContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>Please enter an area of focus</h3>
+                        <p>Specify a major, region, or policy topic to generate your briefing</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show loading
+            contentContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Generating briefing for: <strong>${areaOfFocus}</strong></p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Aggregating articles from international sources...</p>
+                </div>
+            `;
+
+            // Simulate processing delay
+            setTimeout(() => {
+                const briefingData = generateBriefing(areaOfFocus, frequency);
+                contentContainer.innerHTML = renderBriefing(briefingData);
+            }, 1500);
+        });
+
+        // Initial state
+        document.getElementById('contentContainer').innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🌐</div>
+                <h3>Welcome to Global Briefing Generator</h3>
+                <p>Enter your area of focus above to generate a personalized briefing synthesizing news from international sources</p>
+            </div>
+        `;
+    </script>
+</body>
+</html>
