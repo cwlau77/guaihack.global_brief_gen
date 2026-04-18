@@ -12,33 +12,33 @@
         }
 
         :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #3b82f6;
-            --accent-color: #f59e0b;
-            --alert-urgent: #dc2626;
-            --alert-warning: #f59e0b;
-            --alert-info: #06b6d4;
-            --success-color: #10b981;
-            --background: #f9fafb;
-            --card-bg: #ffffff;
-            --border-color: #e5e7eb;
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
+            --primary-color: #0d1f3c;
+            --secondary-color: #0d1f3c;
+            --accent-color: #4a7fd8;
+            --alert-urgent: #c72c2c;
+            --alert-warning: #d4a017;
+            --alert-info: #5a9fd4;
+            --success-color: #2f5233;
+            --background: #1a2d45;
+            --card-bg: #243854;
+            --border-color: #3d5a7c;
+            --text-primary: #ecf0f8;
+            --text-secondary: #a8b8c8;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
             background-color: var(--background);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.7;
+            letter-spacing: 0.3px;
         }
 
-        /* Header */
         header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: var(--primary-color);
             color: white;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 2.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .header-container {
@@ -47,119 +47,153 @@
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.75rem;
+            margin-bottom: 0.75rem;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .tagline {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1.15rem;
+            opacity: 0.92;
+            letter-spacing: 0.3px;
+            font-weight: 300;
         }
 
-        /* Main Container */
+        .main-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .main-nav { flex-direction: column; gap: 0.25rem; }
+            .nav-btn { padding: 0.5rem 0.75rem; font-size: 0.85rem; }
+        }
+
+        @media (max-width: 768px) {
+            .header-container > div { flex-direction: column !important; gap: 1rem; }
+            .main-nav { width: 100%; flex-direction: row; flex-wrap: wrap; }
+            .nav-btn { flex: 1; min-width: 100px; }
+        }
+
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem 1rem;
+            padding: 2.5rem 1.5rem;
         }
 
-        /* Input Section */
         .input-section {
             background: var(--card-bg);
             border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .input-section h2 {
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            font-size: 1.5rem;
+            margin-bottom: 1.75rem;
+            color: var(--text-primary);
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         .form-group {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             flex-wrap: wrap;
             align-items: flex-end;
         }
 
         .input-wrapper {
             flex: 1;
-            min-width: 250px;
+            min-width: 280px;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.65rem;
             font-weight: 600;
             color: var(--text-primary);
+            font-size: 0.95rem;
+            letter-spacing: 0.2px;
         }
 
         input[type="text"],
         select {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.85rem;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.98rem;
             font-family: inherit;
             transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #1a2d45;
+            color: var(--text-primary);
+        }
+
+        input[type="text"]::placeholder { color: #7a8aa0; }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #1a2d45 inset !important;
+            -webkit-text-fill-color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
         }
 
         input[type="text"]:focus,
         select:focus {
             outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #5a8dd9;
+            box-shadow: 0 0 0 3px rgba(90, 141, 217, 0.25);
         }
 
-        .button-group {
-            display: flex;
-            gap: 0.5rem;
-        }
+        .button-group { display: flex; gap: 0.75rem; }
 
         button {
-            padding: 0.75rem 1.5rem;
+            padding: 0.85rem 1.75rem;
             border: none;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.98rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            letter-spacing: 0.3px;
         }
 
-        .btn-generate {
-            background-color: var(--secondary-color);
-            color: white;
-        }
+        .btn-generate { background-color: #5a8dd9; color: white; }
+        .btn-generate:hover { background-color: #6a9de8; box-shadow: 0 4px 12px rgba(90, 141, 217, 0.5); }
+        .btn-generate:active { transform: scale(0.98); }
+        .btn-clear { background-color: #3d5a7c; color: var(--text-primary); }
+        .btn-clear:hover { background-color: #4d6a8c; }
 
-        .btn-generate:hover {
-            background-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-generate:active {
-            transform: scale(0.98);
-        }
-
-        .btn-clear {
-            background-color: var(--border-color);
-            color: var(--text-primary);
-        }
-
-        .btn-clear:hover {
-            background-color: #d1d5db;
-        }
-
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-        }
+        .loading { text-align: center; padding: 2rem; color: var(--text-secondary); }
 
         .spinner {
             border: 3px solid var(--border-color);
@@ -171,257 +205,170 @@
             margin: 0 auto 1rem;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Alerts Section */
-        .alerts-section {
-            margin-bottom: 2rem;
-        }
+        .alerts-section { margin-bottom: 2.5rem; }
 
         .alerts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
         }
 
         .alert-card {
             background: var(--card-bg);
             border-left: 4px solid;
-            padding: 1.5rem;
+            padding: 1.75rem;
             border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
-        .alert-card.urgent {
-            border-left-color: var(--alert-urgent);
-            background: rgba(220, 38, 38, 0.05);
-        }
-
-        .alert-card.warning {
-            border-left-color: var(--alert-warning);
-            background: rgba(245, 158, 11, 0.05);
-        }
-
-        .alert-card.info {
-            border-left-color: var(--alert-info);
-            background: rgba(6, 182, 212, 0.05);
-        }
+        .alert-card.urgent { border-left-color: var(--alert-urgent); background: rgba(139, 0, 0, 0.1); }
+        .alert-card.warning { border-left-color: var(--alert-warning); background: rgba(184, 134, 11, 0.1); }
+        .alert-card.info { border-left-color: var(--alert-info); background: rgba(74, 123, 167, 0.1); }
 
         .alert-badge {
             display: inline-block;
-            font-size: 0.75rem;
+            font-size: 0.77rem;
             font-weight: 700;
-            padding: 0.25rem 0.75rem;
+            padding: 0.35rem 0.85rem;
             border-radius: 20px;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.7px;
         }
 
-        .alert-card.urgent .alert-badge {
-            background-color: var(--alert-urgent);
-            color: white;
-        }
+        .alert-card.urgent .alert-badge { background-color: var(--alert-urgent); color: white; }
+        .alert-card.warning .alert-badge { background-color: var(--alert-warning); color: white; }
+        .alert-card.info .alert-badge { background-color: var(--alert-info); color: white; }
 
-        .alert-card.warning .alert-badge {
-            background-color: var(--alert-warning);
-            color: white;
-        }
+        .alert-title { font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; color: var(--text-primary); letter-spacing: 0.2px; }
+        .alert-description { color: var(--text-secondary); font-size: 0.97rem; margin-bottom: 1rem; line-height: 1.6; }
+        .alert-meta { font-size: 0.85rem; color: var(--text-secondary); }
 
-        .alert-card.info .alert-badge {
-            background-color: var(--alert-info);
-            color: white;
-        }
-
-        .alert-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .alert-description {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .alert-meta {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* Main Content */
         .briefing-section {
             background: var(--card-bg);
             border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .briefing-section h2 {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1.75rem;
+            font-size: 1.6rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid var(--secondary-color);
+            border-bottom: 2px solid #5a8dd9;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
-        .briefing-subsection {
-            margin-bottom: 1.5rem;
-        }
-
-        .briefing-subsection:last-child {
-            margin-bottom: 0;
-        }
+        .briefing-subsection { margin-bottom: 1.75rem; }
+        .briefing-subsection:last-child { margin-bottom: 0; }
 
         .subsection-title {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            letter-spacing: 0.3px;
         }
 
-        .subsection-icon {
-            font-size: 1.3rem;
-        }
-
-        /* News Item */
         .news-item {
-            background: var(--background);
-            border-left: 3px solid var(--secondary-color);
-            padding: 1.25rem;
-            margin-bottom: 1rem;
+            background: #1a2d45;
+            border-left: 3px solid #5a8dd9;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
             border-radius: 4px;
             transition: all 0.3s;
         }
 
-        .news-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transform: translateX(4px);
-        }
+        .news-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.4); transform: translateX(4px); }
 
         .news-header {
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .news-title {
             font-weight: 600;
-            font-size: 1.05rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            color: #b8d8f5;
+            margin-bottom: 0.75rem;
             flex: 1;
             min-width: 200px;
+            letter-spacing: 0.2px;
         }
 
         .priority-badge {
             display: inline-block;
-            font-size: 0.75rem;
+            font-size: 0.77rem;
             font-weight: 700;
-            padding: 0.35rem 0.75rem;
+            padding: 0.4rem 0.85rem;
             border-radius: 20px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
             white-space: nowrap;
         }
 
-        .priority-badge.high {
-            background-color: var(--alert-urgent);
-            color: white;
-        }
+        .priority-badge.high { background-color: var(--alert-urgent); color: white; }
+        .priority-badge.medium { background-color: var(--alert-warning); color: white; }
+        .priority-badge.low { background-color: var(--alert-info); color: white; }
 
-        .priority-badge.medium {
-            background-color: var(--alert-warning);
-            color: white;
-        }
-
-        .priority-badge.low {
-            background-color: var(--alert-info);
-            color: white;
-        }
-
-        .news-content {
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-            line-height: 1.6;
-        }
+        .news-content { color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.75; }
 
         .news-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.75rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
 
-        .source-info {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .source {
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
+        .source-info { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+        .source { display: flex; align-items: center; gap: 0.35rem; letter-spacing: 0.2px; }
 
         .source-badge {
             display: inline-block;
-            background-color: var(--secondary-color);
+            background-color: #5a8dd9;
             color: white;
-            padding: 0.25rem 0.5rem;
+            padding: 0.3rem 0.65rem;
             border-radius: 3px;
             font-size: 0.8rem;
             font-weight: 600;
+            letter-spacing: 0.2px;
         }
 
-        .timestamp {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
+        .timestamp { color: var(--text-secondary); font-size: 0.87rem; letter-spacing: 0.2px; }
 
-        /* Tension Map */
         .tension-map {
-            background: var(--background);
-            padding: 1rem;
+            background: #1a2d45;
+            padding: 1.5rem;
             border-radius: 4px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         .tension-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #3d5a7c;
         }
 
-        .tension-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .tension-actors {
-            flex: 1;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
+        .tension-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .tension-actors { flex: 1; font-weight: 500; color: var(--text-primary); letter-spacing: 0.2px; }
 
         .tension-indicator {
             width: 100px;
@@ -441,417 +388,1054 @@
             transform: translateY(-50%);
         }
 
-        .tension-level.low {
-            background: var(--alert-info);
-            left: 0;
-        }
+        .tension-level.low { background: var(--alert-info); left: 0; }
+        .tension-level.medium { background: var(--alert-warning); left: 50%; transform: translate(-50%, -50%); }
+        .tension-level.high { background: var(--alert-urgent); right: 0; left: auto; }
 
-        .tension-level.medium {
-            background: var(--alert-warning);
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .tension-level.high {
-            background: var(--alert-urgent);
-            right: 0;
-            left: auto;
-        }
-
-        /* Reading List */
-        .reading-list {
-            list-style: none;
-        }
+        .reading-list { list-style: none; }
 
         .reading-item {
-            background: var(--background);
-            padding: 1rem;
-            margin-bottom: 0.75rem;
+            background: #1a2d45;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
             border-radius: 4px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 1rem;
+            gap: 1.25rem;
             transition: all 0.3s;
-            border-left: 3px solid var(--accent-color);
+            border-left: 3px solid #5a8dd9;
         }
 
-        .reading-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .reading-content {
-            flex: 1;
-        }
-
-        .reading-title {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.25rem;
-        }
-
-        .reading-publication {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
+        .reading-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        .reading-content { flex: 1; }
+        .reading-title { font-weight: 600; color: #b8d8f5; margin-bottom: 0.35rem; letter-spacing: 0.2px; }
+        .reading-publication { font-size: 0.9rem; color: var(--text-secondary); }
 
         .reading-link {
             display: inline-block;
-            color: var(--secondary-color);
+            color: white;
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            background: var(--secondary-color);
-            color: white;
+            padding: 0.6rem 1.25rem;
+            background: #5a8dd9;
             border-radius: 4px;
             font-size: 0.85rem;
             white-space: nowrap;
             transition: background 0.3s;
+            letter-spacing: 0.2px;
         }
 
-        .reading-link:hover {
-            background: var(--primary-color);
-            color: white;
-        }
+        .reading-link:hover { background: #6a9de8; color: white; }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-secondary);
-        }
+        .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-secondary); }
+        .empty-state-icon { font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.3; }
+        .empty-state h3 { font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--text-primary); letter-spacing: 0.2px; font-weight: 600; }
 
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            .form-group {
-                flex-direction: column;
-            }
-
-            .input-wrapper {
-                width: 100%;
-            }
-
-            .button-group {
-                width: 100%;
-            }
-
-            button {
-                flex: 1;
-            }
-
-            .news-header {
-                flex-direction: column;
-            }
-
-            .priority-badge {
-                align-self: flex-start;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .input-section,
-            .briefing-section {
-                padding: 1.5rem;
-            }
-
-            .alerts-container {
-                grid-template-columns: 1fr;
-            }
+            h1 { font-size: 2rem; }
+            .form-group { flex-direction: column; }
+            .input-wrapper { width: 100%; }
+            .button-group { width: 100%; }
+            button { flex: 1; }
+            .news-header { flex-direction: column; }
+            .priority-badge { align-self: flex-start; }
+            .container { padding: 1.5rem; }
+            .input-section, .briefing-section { padding: 1.75rem; }
+            .alerts-container { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .profile-header { flex-direction: column; text-align: center; gap: 1rem; }
+            .setting-item { flex-direction: column; gap: 1rem; }
+            .briefing-actions { flex-direction: column; }
+            .action-btn { width: 100%; }
         }
 
-        /* Footer */
         footer {
             background-color: var(--primary-color);
             color: white;
             text-align: center;
-            padding: 1.5rem;
+            padding: 2rem;
             margin-top: 3rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.2px;
         }
 
-        footer p {
-            opacity: 0.9;
-        }
+        footer p { opacity: 0.9; }
 
-        /* Summary Stats */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            background: var(--primary-color);
             color: white;
-            padding: 1rem;
+            padding: 1.5rem;
             border-radius: 6px;
             text-align: center;
         }
 
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
+        .stat-number { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.2px; }
+        .stat-label { font-size: 0.93rem; opacity: 0.92; letter-spacing: 0.2px; }
+
+        .trending-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
-        .stat-label {
+        .trending-section h2 {
+            color: var(--text-primary);
+            margin-bottom: 1.75rem;
+            font-size: 1.6rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #5a8dd9;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .chart-controls { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: center; }
+        .timing-selector { display: flex; gap: 0.5rem; }
+
+        .timing-btn {
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
             font-size: 0.9rem;
-            opacity: 0.9;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .timing-btn.active { background: #5a8dd9; border-color: #5a8dd9; color: white; }
+        .timing-btn:hover { border-color: #5a8dd9; color: #5a8dd9; }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 2rem;
+            background: #1a2d45;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .legend-label { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; font-weight: 500; }
+
+        .topic-toggles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .toggle-item:hover { background: rgba(90, 141, 217, 0.1); }
+
+        .toggle-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: #5a8dd9; }
+        .toggle-label { font-size: 0.9rem; color: var(--text-primary); cursor: pointer; flex: 1; }
+        .toggle-value { font-size: 0.85rem; color: var(--text-secondary); margin-left: auto; }
+
+        .form-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .form-section h2 { color: var(--text-primary); margin-bottom: 1.75rem; font-size: 1.6rem; font-weight: 600; letter-spacing: 0.3px; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-field { display: flex; flex-direction: column; }
+
+        .form-field label { margin-bottom: 0.65rem; font-weight: 600; color: var(--text-primary); font-size: 0.95rem; letter-spacing: 0.2px; }
+
+        .form-field input,
+        .form-field textarea {
+            background-color: #1a2d45;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.85rem;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.98rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-field textarea { resize: vertical; min-height: 120px; }
+
+        .form-field input:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: #5a8dd9;
+            box-shadow: 0 0 0 3px rgba(90, 141, 217, 0.25);
+        }
+
+        .settings-grid { display: grid; gap: 1.5rem; }
+
+        .setting-item {
+            background: #1a2d45;
+            padding: 1.5rem;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-label { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+        .setting-title { color: var(--text-primary); font-weight: 600; letter-spacing: 0.2px; }
+        .setting-description { color: var(--text-secondary); font-size: 0.9rem; }
+
+        /* Standard toggle switch */
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #3d5a7c;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: none;
+            position: relative;
+            flex-shrink: 0;
+            margin-left: 1.5rem;
+        }
+
+        .toggle-switch.active { background: #5a8dd9; }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.active::after { left: 24px; }
+
+
+        .saved-briefing-card {
+            background: #1a2d45;
+            border-left: 3px solid #5a8dd9;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 1.25rem;
+            transition: all 0.3s;
+        }
+
+        .saved-briefing-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+
+        .briefing-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .briefing-title { font-weight: 600; font-size: 1.1rem; color: #b8d8f5; }
+        .briefing-date { font-size: 0.9rem; color: var(--text-secondary); }
+
+        .briefing-actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+
+        .action-btn {
+            padding: 0.6rem 1rem;
+            background: #5a8dd9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover { background: #6a9de8; }
+
+        .action-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .action-btn.secondary:hover { border-color: #5a8dd9; color: #5a8dd9; }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #5a8dd9;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5a8dd9, #00d4ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .profile-info h3 { color: var(--text-primary); font-size: 1.3rem; margin-bottom: 0.25rem; letter-spacing: 0.2px; }
+        .profile-info p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        /* ============================================
+           STAR BUTTON — redesigned for clear contrast
+        ============================================ */
+        .star-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            position: relative;
+            /* Unstarred: hollow blue outline */
+            background: transparent;
+            border: 2px solid #5a8dd9;
+        }
+
+        /* Star shape via SVG-like CSS */
+        .star-btn::before {
+            content: '';
+            display: block;
+            width: 18px;
+            height: 18px;
+            /* Star drawn as a clip-path polygon */
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            background: #5a8dd9;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .star-btn:hover {
+            background: rgba(90, 141, 217, 0.12);
+            border-color: #6a9de8;
+        }
+
+        /* Starred state: solid gold fill, gold border */
+        .star-btn.active {
+            background: #f5c518;
+            border-color: #d4a800;
+        }
+
+        .star-btn.active::before {
+            background: #7a5000;
+            transform: scale(1.1);
+        }
+
+        .star-btn.active:hover {
+            background: #ffd030;
+            border-color: #b89000;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: #243854;
+            border: 1px solid #5a8dd9;
+            border-left: 4px solid #5a8dd9;
+            padding: 1.25rem;
+            border-radius: 6px;
+            color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toast.success { border-left-color: #2f5233; border-color: #2f5233; }
+        .toast.error { border-left-color: #c72c2c; border-color: #c72c2c; }
+        .toast.warning { border-left-color: #d4a017; border-color: #d4a017; }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+
+        .search-container { position: relative; flex: 1; max-width: 300px; }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #1a2d45;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus { outline: none; border-color: #5a8dd9; box-shadow: 0 0 0 3px rgba(90,141,217,0.25); }
+        .search-box::placeholder { color: var(--text-secondary); }
+
+        .skeleton {
+            background: linear-gradient(90deg, #1a2d45 25%, #243854 50%, #1a2d45 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .skeleton-text { height: 0.9rem; margin-bottom: 0.75rem; }
+        .skeleton-heading { height: 1.5rem; margin-bottom: 1.5rem; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #5a8dd9;
+            padding-bottom: 1rem;
+        }
+
+        .modal-close { background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+        @media (max-width: 768px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+            .toast-container { left: 1rem; right: 1rem; bottom: 1rem; max-width: none; }
+        }
+
+        .stats-detailed {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card-detailed {
+            background: #1a2d45;
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid #5a8dd9;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .stat-label-small { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .stat-value-large { font-size: 2.5rem; font-weight: 700; color: #5a8dd9; margin-bottom: 0.5rem; }
+        .stat-change { font-size: 0.9rem; color: #7ab8a0; }
+        .stat-change.negative { color: #c72c2c; }
+
+        .skip-link { position: absolute; top: -40px; left: 0; background: #5a8dd9; color: white; padding: 0.5rem 1rem; text-decoration: none; z-index: 100; }
+        .skip-link:focus { top: 0; }
+
+        button:focus, input:focus, select:focus, textarea:focus { outline: 2px solid #5a8dd9; outline-offset: 2px; }
+
+        @media print {
+            header, .main-nav, footer, .search-container, .button-group, .briefing-actions, .action-btn, button { display: none !important; }
+            body { background: white; color: #000; }
+            .briefing-section, .input-section, .form-section, .alert-card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+            h1, h2 { page-break-after: avoid; }
+            @page { margin: 2cm; }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Header -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="color: var(--text-primary); margin: 0;">Compare Briefings</h2>
+                <button class="modal-close" onclick="closeComparison()" aria-label="Close comparison modal">×</button>
+            </div>
+            <div id="comparisonContent"></div>
+        </div>
+    </div>
+
     <header>
         <div class="header-container">
-            <h1>🌍 Global Briefing Generator</h1>
-            <p class="tagline">Stay informed on international developments tailored to your interests</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1.5rem; flex-wrap: wrap;">
+                <div>
+                    <h1>Global Briefing Generator</h1>
+                    <p class="tagline">Stay informed on international developments tailored to your interests</p>
+                </div>
+                <nav class="main-nav">
+                    <button class="nav-btn active" onclick="switchPage('dashboard')" aria-label="Dashboard page">Dashboard</button>
+                    <button class="nav-btn" onclick="switchPage('saved')" aria-label="Saved briefings page">Saved Briefings</button>
+                    <button class="nav-btn" onclick="switchPage('account')" aria-label="Account settings page">Account</button>
+                    <button class="nav-btn" onclick="switchPage('settings')" aria-label="Notification settings page">Settings</button>
+                </nav>
+            </div>
         </div>
     </header>
 
-    <!-- Main Container -->
     <div class="container">
-        <!-- Input Section -->
-        <section class="input-section">
-            <h2>Customize Your Briefing</h2>
-            <form id="briefingForm">
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <label for="areaOfFocus">Area of Focus</label>
-                        <input
-                            type="text"
-                            id="areaOfFocus"
-                            placeholder="e.g., Middle East Policy, Climate Change, Southeast Asian Trade"
-                            required
-                        >
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page-section active">
+            <section class="input-section">
+                <h2>Customize Your Briefing</h2>
+                <form id="briefingForm" aria-label="Generate briefing form">
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <label for="areaOfFocus">Area of Focus</label>
+                            <input
+                                type="text"
+                                id="areaOfFocus"
+                                placeholder="e.g., Middle East Policy, Climate Change, Southeast Asian Trade"
+                                required
+                                aria-required="true"
+                                aria-label="Enter the area of focus for your briefing"
+                            >
+                        </div>
+                        <div class="input-wrapper" style="min-width: 150px;">
+                            <label for="updateFrequency">Update Frequency</label>
+                            <select id="updateFrequency" aria-label="Select briefing update frequency">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="biweekly">Bi-weekly</option>
+                            </select>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn-generate" aria-label="Generate a new briefing based on your criteria">Generate Briefing</button>
+                            <button type="reset" class="btn-clear" aria-label="Clear form fields">Clear</button>
+                        </div>
                     </div>
-                    <div class="input-wrapper" style="min-width: 150px;">
-                        <label for="updateFrequency">Update Frequency</label>
-                        <select id="updateFrequency">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="biweekly">Bi-weekly</option>
-                        </select>
+                </form>
+            </section>
+            <div id="contentContainer"></div>
+        </div>
+
+        <!-- Saved Briefings Page -->
+        <div id="saved" class="page-section">
+            <section class="form-section">
+                <h2>Saved Briefings</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Your recently saved briefings appear here for quick access and comparison.</p>
+
+                <div class="stats-detailed" style="margin-bottom: 2rem;">
+                    <div class="stat-card-detailed">
+                        <div class="stat-label-small">Total Briefings</div>
+                        <div class="stat-value-large" id="totalBriefings">3</div>
+                        <div class="stat-change">+1 this week</div>
                     </div>
-                    <div class="button-group">
-                        <button type="submit" class="btn-generate">Generate Briefing</button>
-                        <button type="reset" class="btn-clear">Clear</button>
+                    <div class="stat-card-detailed">
+                        <div class="stat-label-small">Total Articles</div>
+                        <div class="stat-value-large" id="totalArticles">30</div>
+                        <div class="stat-change">Across all briefings</div>
+                    </div>
+                    <div class="stat-card-detailed">
+                        <div class="stat-label-small">Starred Briefings</div>
+                        <div class="stat-value-large" id="starredBriefings">1</div>
+                        <div class="stat-change">Your favorites</div>
+                    </div>
+                    <div class="stat-card-detailed">
+                        <div class="stat-label-small">Last Updated</div>
+                        <div class="stat-value-large" style="font-size: 1.2rem;">Today</div>
+                        <div class="stat-change">2 hours ago</div>
                     </div>
                 </div>
-            </form>
-        </section>
 
-        <!-- Content Container -->
-        <div id="contentContainer"></div>
+                <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: center;">
+                    <div class="search-container">
+                        <input
+                            type="text"
+                            id="briefingSearch"
+                            class="search-box"
+                            placeholder="Search briefings..."
+                            aria-label="Search saved briefings"
+                            onkeyup="filterBriefings()"
+                        >
+                    </div>
+                    <select id="filterType" class="search-box" style="max-width: 200px; flex: 0 1 auto;" onchange="filterBriefings()" aria-label="Filter by type">
+                        <option value="">All Types</option>
+                        <option value="starred">Starred Only</option>
+                        <option value="recent">Recent</option>
+                    </select>
+                    <button class="action-btn secondary" onclick="compareSelected()" style="flex: 0 1 auto;" aria-label="Compare selected briefings">Compare Selected</button>
+                </div>
+
+                <div id="savedBriefingsContainer">
+                    <div class="saved-briefing-card" data-type="Middle East Policy">
+                        <div class="briefing-meta">
+                            <div>
+                                <div class="briefing-title">Middle East Policy - Weekly Update</div>
+                                <div class="briefing-date">Saved on April 15, 2026</div>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                                <span style="background: #5a9fd4; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">8 articles</span>
+                                <input type="checkbox" class="briefing-checkbox" value="1" aria-label="Select briefing for comparison">
+                                <button class="star-btn" onclick="toggleStar(this, '1')" aria-label="Star this briefing" title="Star briefing"></button>
+                            </div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Synthesizing recent developments in Middle Eastern diplomatic relations and regional stability issues...</p>
+                        <div class="briefing-actions">
+                            <button class="action-btn" onclick="loadSavedBriefing('1')" aria-label="View the full Middle East Policy briefing">View Briefing</button>
+                            <button class="action-btn secondary" onclick="exportPDF('1')" aria-label="Export briefing as PDF">Export PDF</button>
+                            <button class="action-btn secondary" onclick="shareBriefing('1')" aria-label="Share this briefing via email">Share</button>
+                            <button class="action-btn secondary" onclick="deleteBriefing('1')" aria-label="Delete this briefing">Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="saved-briefing-card" data-type="Climate Change">
+                        <div class="briefing-meta">
+                            <div>
+                                <div class="briefing-title">Climate Change & Environmental Policy</div>
+                                <div class="briefing-date">Saved on April 10, 2026</div>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                                <span style="background: #5a9fd4; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">12 articles</span>
+                                <input type="checkbox" class="briefing-checkbox" value="2" aria-label="Select briefing for comparison">
+                                <button class="star-btn active" onclick="toggleStar(this, '2')" aria-label="Unstar this briefing" title="Unstar briefing"></button>
+                            </div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Global climate initiatives, carbon reduction agreements, and international environmental cooperation framework...</p>
+                        <div class="briefing-actions">
+                            <button class="action-btn" onclick="loadSavedBriefing('2')" aria-label="View the full Climate Change briefing">View Briefing</button>
+                            <button class="action-btn secondary" onclick="exportPDF('2')" aria-label="Export briefing as PDF">Export PDF</button>
+                            <button class="action-btn secondary" onclick="shareBriefing('2')" aria-label="Share this briefing via email">Share</button>
+                            <button class="action-btn secondary" onclick="deleteBriefing('2')" aria-label="Delete this briefing">Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="saved-briefing-card" data-type="Southeast Asian Trade">
+                        <div class="briefing-meta">
+                            <div>
+                                <div class="briefing-title">Southeast Asian Trade & Economic Integration</div>
+                                <div class="briefing-date">Saved on April 5, 2026</div>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                                <span style="background: #5a9fd4; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">10 articles</span>
+                                <input type="checkbox" class="briefing-checkbox" value="3" aria-label="Select briefing for comparison">
+                                <button class="star-btn" onclick="toggleStar(this, '3')" aria-label="Star this briefing" title="Star briefing"></button>
+                            </div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Trade agreements, regional economic cooperation, and market developments in Southeast Asia...</p>
+                        <div class="briefing-actions">
+                            <button class="action-btn" onclick="loadSavedBriefing('3')" aria-label="View the full Southeast Asian Trade briefing">View Briefing</button>
+                            <button class="action-btn secondary" onclick="exportPDF('3')" aria-label="Export briefing as PDF">Export PDF</button>
+                            <button class="action-btn secondary" onclick="shareBriefing('3')" aria-label="Share this briefing via email">Share</button>
+                            <button class="action-btn secondary" onclick="deleteBriefing('3')" aria-label="Delete this briefing">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Account Page -->
+        <div id="account" class="page-section">
+            <section class="form-section">
+                <div class="profile-header">
+                    <div class="avatar" aria-label="User avatar with initials">JD</div>
+                    <div class="profile-info">
+                        <h3 id="profileName">Jane Doe</h3>
+                        <p id="profileEmail">jane.doe@example.com</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Member since March 2026</p>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 2rem;">Edit Profile</h2>
+                <form id="accountForm" aria-label="Edit user profile form">
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" value="Jane" placeholder="Your first name" required aria-required="true">
+                        </div>
+                        <div class="form-field">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" value="Doe" placeholder="Your last name" required aria-required="true">
+                        </div>
+                        <div class="form-field">
+                            <label for="emailAddress">Email Address</label>
+                            <input type="email" id="emailAddress" value="jane.doe@example.com" placeholder="Your email" required aria-required="true">
+                        </div>
+                        <div class="form-field">
+                            <label for="organization">Organization</label>
+                            <input type="text" id="organization" value="Policy Research Institute" placeholder="Your organization">
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="userBio">Bio</label>
+                        <textarea id="userBio" placeholder="Tell us about yourself...">International policy analyst with focus on geopolitical developments and regional dynamics.</textarea>
+                    </div>
+
+                    <button type="submit" class="btn-generate" style="margin-top: 1rem;" aria-label="Save account changes">Save Changes</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings" class="page-section">
+            <section class="form-section">
+                <h2>Notification Settings</h2>
+                <div class="settings-grid" role="group" aria-label="Notification preferences">
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <div class="setting-title">Email Notifications</div>
+                            <div class="setting-description">Receive briefing updates via email</div>
+                        </div>
+                        <button class="toggle-switch active" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle email notifications"></button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <div class="setting-title">Alert Notifications</div>
+                            <div class="setting-description">Get notified of urgent developments</div>
+                        </div>
+                        <button class="toggle-switch active" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle alert notifications"></button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <div class="setting-title">Daily Digest</div>
+                            <div class="setting-description">Receive a daily summary of key topics</div>
+                        </div>
+                        <button class="toggle-switch" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle daily digest"></button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <div class="setting-title">Marketing Emails</div>
+                            <div class="setting-description">Receive updates about new features</div>
+                        </div>
+                        <button class="toggle-switch" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle marketing emails"></button>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 2.5rem; margin-bottom: 1.75rem;">Privacy & Security</h2>
+                <div class="settings-grid" role="group" aria-label="Privacy and security settings">
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <div class="setting-title">Two-Factor Authentication</div>
+                            <div class="setting-description">Add extra security to your account</div>
+                        </div>
+                        <button class="toggle-switch" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle two-factor authentication"></button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <div class="setting-title">Data Privacy</div>
+                            <div class="setting-description">Keep my briefing data private</div>
+                        </div>
+                        <button class="toggle-switch active" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle data privacy"></button>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 2.5rem; margin-bottom: 1.75rem;">Account Actions</h2>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn-generate" aria-label="Change your account password">Change Password</button>
+                    <button class="action-btn secondary" aria-label="Download all your data">Download My Data</button>
+                    <button class="action-btn secondary" style="color: #c72c2c; border-color: #c72c2c;" aria-label="Permanently delete your account">Delete Account</button>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Global Briefing Generator. Powered by AI with aggregated international news sources.</p>
     </footer>
 
     <script>
-        // Generate sample briefing with mock data
+        let trendingChart = null;
+        let currentTrendingData = null;
+        let selectedTopics = null;
+        let selectedTiming = 'week';
+
+        function generateTrendingTopicsData(briefingData) {
+            const keywords = extractKeywords(briefingData);
+            const topicTrends = generateTrendData(keywords, briefingData);
+            return topicTrends.slice(0, 10);
+        }
+
+        function extractKeywords(data) {
+            const wordFreq = {};
+            const titleContent = [
+                ...data.keyDevelopments.map(item => item.title),
+                ...data.keyDevelopments.map(item => item.content),
+                ...data.emerginTensions.map(item => item.description),
+                data.area
+            ].join(' ');
+
+            const words = titleContent.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+            words.forEach(word => {
+                word = word.replace(/[^a-z0-9]/g, '');
+                wordFreq[word] = (wordFreq[word] || 0) + 1;
+            });
+
+            return Object.entries(wordFreq).sort((a, b) => b[1] - a[1]).slice(0, 15).map(([word]) => word);
+        }
+
+        function generateTrendData(topics) {
+            const colors = ['#5a8dd9','#00d4ff','#00ffcc','#7c5cff','#ff6b9d','#00e5cc','#5ac8ff','#ffb366','#66ff99','#ff99cc'];
+            return topics.map((topic, index) => ({
+                label: topic.charAt(0).toUpperCase() + topic.slice(1),
+                data: generateTimeSeriesData(topic, selectedTiming),
+                borderColor: colors[index % colors.length],
+                backgroundColor: colors[index % colors.length] + '20',
+                borderWidth: 2.5,
+                fill: false,
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: colors[index % colors.length],
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+                pointHoverRadius: 6,
+                hidden: index > 4
+            }));
+        }
+
+        function generateTimeSeriesData(topic, timing) {
+            const intervals = timing === 'day' ? 24 : timing === 'week' ? 7 : 30;
+            const data = [];
+            let baseValue = Math.random() * 50 + 30;
+            for (let i = 0; i < intervals; i++) {
+                const variance = (Math.random() - 0.5) * 30;
+                const trend = (i / intervals) * 20;
+                data.push(Math.round(Math.max(10, baseValue + variance + trend)));
+            }
+            return data;
+        }
+
+        function getTimeLabels(timing) {
+            if (timing === 'day') return Array.from({length: 24}, (_, i) => `${i}:00`);
+            if (timing === 'week') return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            return Array.from({length: 30}, (_, i) => `Day ${i + 1}`);
+        }
+
+        function initChart(containerId, trendingData) {
+            const ctx = document.getElementById(containerId);
+            if (!ctx) return;
+            if (trendingChart) trendingChart.destroy();
+            trendingChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: getTimeLabels(selectedTiming), datasets: trendingData },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            padding: 12,
+                            borderRadius: 8,
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#5a8dd9',
+                            borderWidth: 1,
+                            callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + ' mentions' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(93,106,130,0.2)', drawBorder: true, borderColor: '#ecf0f8' },
+                            ticks: { color: '#ecf0f8' }
+                        },
+                        x: {
+                            grid: { display: false, borderColor: '#ecf0f8' },
+                            ticks: { color: '#ecf0f8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTiming(timing) {
+            selectedTiming = timing;
+            document.querySelectorAll('.timing-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (currentTrendingData) {
+                const updatedData = generateTrendData(currentTrendingData.map(t => t.label.toLowerCase()));
+                initChart('trendingChart', updatedData);
+                updateToggleVisibility(updatedData);
+            }
+        }
+
+        function toggleTopic(index) {
+            if (trendingChart && trendingChart.data.datasets[index]) {
+                trendingChart.data.datasets[index].hidden = !trendingChart.data.datasets[index].hidden;
+                trendingChart.update();
+            }
+        }
+
+        function updateToggleVisibility(datasets) {
+            datasets.forEach((dataset, index) => {
+                const checkbox = document.getElementById(`topic-${index}`);
+                if (checkbox) checkbox.checked = !dataset.hidden;
+            });
+        }
+
+        function addTrendingSection(html, data) {
+            const trendingTopics = generateTrendingTopicsData(data);
+            currentTrendingData = trendingTopics;
+            selectedTopics = trendingTopics.map(() => true);
+
+            let trendingHtml = `
+                <section class="trending-section">
+                    <h2>Topic Trends & Popularity Analysis</h2>
+                    <div class="chart-controls">
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <label style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">Timeframe</label>
+                            <div class="timing-selector">
+                                <button class="timing-btn ${selectedTiming === 'day' ? 'active' : ''}" onclick="updateTiming('day')">Hourly</button>
+                                <button class="timing-btn ${selectedTiming === 'week' ? 'active' : ''}" onclick="updateTiming('week')">Weekly</button>
+                                <button class="timing-btn ${selectedTiming === 'month' ? 'active' : ''}" onclick="updateTiming('month')">Monthly</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container"><canvas id="trendingChart"></canvas></div>
+                    <div>
+                        <div class="legend-label">Toggle Topics to Display</div>
+                        <div class="topic-toggles">
+            `;
+
+            trendingTopics.forEach((topic, index) => {
+                trendingHtml += `
+                    <div class="toggle-item">
+                        <input type="checkbox" id="topic-${index}" class="toggle-checkbox" ${index <= 4 ? 'checked' : ''} onchange="toggleTopic(${index})">
+                        <label for="topic-${index}" class="toggle-label">${topic.label}</label>
+                        <span class="toggle-value">+${Math.round(Math.random() * 30 + 20)}%</span>
+                    </div>
+                `;
+            });
+
+            trendingHtml += `</div></div></section>`;
+            setTimeout(() => initChart('trendingChart', trendingTopics), 100);
+            return trendingHtml + html;
+        }
+
         function generateBriefing(areaOfFocus, frequency) {
             return {
                 area: areaOfFocus,
                 date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
                 frequency: frequency,
-                stats: {
-                    articles: 24,
-                    sources: 8,
-                    regions: 5,
-                    alerts: 3
-                },
+                stats: { articles: 24, sources: 8, regions: 5, alerts: 3 },
                 alerts: [
-                    {
-                        id: 1,
-                        type: 'urgent',
-                        title: 'Critical Development',
-                        description: 'Major policy announcement affecting regional relations and international cooperation frameworks',
-                        time: '2 hours ago'
-                    },
-                    {
-                        id: 2,
-                        type: 'warning',
-                        title: 'Emerging Tension',
-                        description: 'Escalating diplomatic dispute between key actors over trade and security concerns',
-                        time: '4 hours ago'
-                    },
-                    {
-                        id: 3,
-                        type: 'info',
-                        title: 'Regional Update',
-                        description: 'Economic data release impacts market outlook and investor confidence',
-                        time: '6 hours ago'
-                    }
+                    { id: 1, type: 'urgent', title: 'Critical Development', description: 'Major policy announcement affecting regional relations and international cooperation frameworks', time: '2 hours ago' },
+                    { id: 2, type: 'warning', title: 'Emerging Tension', description: 'Escalating diplomatic dispute between key actors over trade and security concerns', time: '4 hours ago' },
+                    { id: 3, type: 'info', title: 'Regional Update', description: 'Economic data release impacts market outlook and investor confidence', time: '6 hours ago' }
                 ],
                 keyDevelopments: [
-                    {
-                        id: 1,
-                        title: 'Major Policy Announcement Regarding ' + areaOfFocus,
-                        content: 'Government announces sweeping reforms affecting international trade relations. The announcement comes amid ongoing negotiations with neighboring countries and addresses key concerns raised by stakeholders.',
-                        priority: 'high',
-                        sources: ['Reuters', 'AP News'],
-                        timestamp: '2 hours ago'
-                    },
-                    {
-                        id: 2,
-                        title: 'Economic Indicators Show Significant Growth',
-                        content: 'Latest quarterly economic data shows growth in critical sectors. Analysis suggests long-term implications for regional stability and market volatility patterns.',
-                        priority: 'medium',
-                        sources: ['Bloomberg', 'Financial Times'],
-                        timestamp: '4 hours ago'
-                    },
-                    {
-                        id: 3,
-                        title: 'High-Level Diplomatic Engagement',
-                        content: 'Officials meet to discuss ongoing disputes and potential collaborative initiatives. Talks described as productive by both delegations with multiple rounds planned.',
-                        priority: 'medium',
-                        sources: ['BBC', 'DW'],
-                        timestamp: '6 hours ago'
-                    },
-                    {
-                        id: 4,
-                        title: 'Infrastructure Development Project Announcement',
-                        content: 'New regional infrastructure project unveiled to boost connectivity and economic cooperation. Expected to create thousands of jobs and strengthen ties.',
-                        priority: 'low',
-                        sources: ['Reuters', 'The Guardian'],
-                        timestamp: '8 hours ago'
-                    }
+                    { id: 1, title: 'Major Policy Announcement Regarding ' + areaOfFocus, content: 'Government announces sweeping reforms affecting international trade relations. The announcement comes amid ongoing negotiations with neighboring countries and addresses key concerns raised by stakeholders.', priority: 'high', sources: ['Reuters', 'AP News'], timestamp: '2 hours ago' },
+                    { id: 2, title: 'Economic Indicators Show Significant Growth', content: 'Latest quarterly economic data shows growth in critical sectors. Analysis suggests long-term implications for regional stability and market volatility patterns.', priority: 'medium', sources: ['Bloomberg', 'Financial Times'], timestamp: '4 hours ago' },
+                    { id: 3, title: 'High-Level Diplomatic Engagement', content: 'Officials meet to discuss ongoing disputes and potential collaborative initiatives. Talks described as productive by both delegations with multiple rounds planned.', priority: 'medium', sources: ['BBC', 'DW'], timestamp: '6 hours ago' },
+                    { id: 4, title: 'Infrastructure Development Project Announcement', content: 'New regional infrastructure project unveiled to boost connectivity and economic cooperation. Expected to create thousands of jobs and strengthen ties.', priority: 'low', sources: ['Reuters', 'The Guardian'], timestamp: '8 hours ago' }
                 ],
                 emerginTensions: [
-                    {
-                        id: 1,
-                        actors: 'Nation A ↔ Nation B',
-                        level: 'high',
-                        description: 'Trade dispute escalation over tariffs'
-                    },
-                    {
-                        id: 2,
-                        actors: 'Regional Alliance ↔ Nation C',
-                        level: 'medium',
-                        description: 'Security concerns and military posturing'
-                    },
-                    {
-                        id: 3,
-                        actors: 'Nation D ↔ Nation E',
-                        level: 'low',
-                        description: 'Border demarcation discussions ongoing'
-                    },
-                    {
-                        id: 4,
-                        actors: 'Bloc 1 ↔ Bloc 2',
-                        level: 'medium',
-                        description: 'Competing economic integration efforts'
-                    }
+                    { id: 1, actors: 'Nation A ↔ Nation B', level: 'high', description: 'Trade dispute escalation over tariffs' },
+                    { id: 2, actors: 'Regional Alliance ↔ Nation C', level: 'medium', description: 'Security concerns and military posturing' },
+                    { id: 3, actors: 'Nation D ↔ Nation E', level: 'low', description: 'Border demarcation discussions ongoing' },
+                    { id: 4, actors: 'Bloc 1 ↔ Bloc 2', level: 'medium', description: 'Competing economic integration efforts' }
                 ],
                 readingList: [
-                    {
-                        id: 1,
-                        title: 'Deep Dive: Understanding the Current Geopolitical Crisis',
-                        publication: 'International Affairs Quarterly',
-                        link: '#'
-                    },
-                    {
-                        id: 2,
-                        title: 'Regional Economic Outlook for Next Quarter',
-                        publication: 'Global Economic Forum',
-                        link: '#'
-                    },
-                    {
-                        id: 3,
-                        title: 'Historical Context: A 10-Year Analysis',
-                        publication: 'Policy Research Institute',
-                        link: '#'
-                    },
-                    {
-                        id: 4,
-                        title: 'Strategic Implications for Regional Powers',
-                        publication: 'Foreign Policy Review',
-                        link: '#'
-                    },
-                    {
-                        id: 5,
-                        title: 'Market Analysis: Investor Sentiment Report',
-                        publication: 'Financial Intelligence Daily',
-                        link: '#'
-                    }
+                    { id: 1, title: 'Deep Dive: Understanding the Current Geopolitical Crisis', publication: 'International Affairs Quarterly', link: '#' },
+                    { id: 2, title: 'Regional Economic Outlook for Next Quarter', publication: 'Global Economic Forum', link: '#' },
+                    { id: 3, title: 'Historical Context: A 10-Year Analysis', publication: 'Policy Research Institute', link: '#' },
+                    { id: 4, title: 'Strategic Implications for Regional Powers', publication: 'Foreign Policy Review', link: '#' },
+                    { id: 5, title: 'Market Analysis: Investor Sentiment Report', publication: 'Financial Intelligence Daily', link: '#' }
                 ]
             };
         }
 
-        // Render briefing
         function renderBriefing(data) {
             let html = '';
 
-            // Stats Section
             html += `
                 <div class="stats-container">
-                    <div class="stat-card">
-                        <div class="stat-number">${data.stats.articles}</div>
-                        <div class="stat-label">Articles Aggregated</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.stats.sources}</div>
-                        <div class="stat-label">News Sources</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.stats.regions}</div>
-                        <div class="stat-label">Regions Covered</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.stats.alerts}</div>
-                        <div class="stat-label">Priority Alerts</div>
-                    </div>
+                    <div class="stat-card"><div class="stat-number">${data.stats.articles}</div><div class="stat-label">Articles Aggregated</div></div>
+                    <div class="stat-card"><div class="stat-number">${data.stats.sources}</div><div class="stat-label">News Sources</div></div>
+                    <div class="stat-card"><div class="stat-number">${data.stats.regions}</div><div class="stat-label">Regions Covered</div></div>
+                    <div class="stat-card"><div class="stat-number">${data.stats.alerts}</div><div class="stat-label">Priority Alerts</div></div>
                 </div>
             `;
 
-            // Priority Alerts
-            html += `
-                <section class="alerts-section">
-                    <h2 style="margin-bottom: 1rem; color: var(--primary-color); font-size: 1.3rem;">🚨 Priority Alerts</h2>
-                    <div class="alerts-container">
-            `;
-            
+            html += `<section class="alerts-section"><h2 style="margin-bottom: 1rem; color: var(--text-primary); font-size: 1.3rem;">Priority Alerts</h2><div class="alerts-container">`;
             data.alerts.forEach(alert => {
                 html += `
                     <div class="alert-card ${alert.type}">
-                        <div class="alert-badge">${alert.type === 'urgent' ? '⚠️ URGENT' : alert.type === 'warning' ? '⚠️ WARNING' : 'ℹ️ INFO'}</div>
+                        <div class="alert-badge">${alert.type === 'urgent' ? 'URGENT' : alert.type === 'warning' ? 'WARNING' : 'INFO'}</div>
                         <div class="alert-title">${alert.title}</div>
                         <div class="alert-description">${alert.description}</div>
                         <div class="alert-meta">${alert.time}</div>
                     </div>
                 `;
             });
-
             html += `</div></section>`;
 
-            // Key Developments
-            html += `
-                <section class="briefing-section">
-                    <h2>📰 Key Developments</h2>
-                    <div class="briefing-subsection">
-            `;
-
+            html += `<section class="briefing-section"><h2>Key Developments</h2><div class="briefing-subsection">`;
             data.keyDevelopments.forEach(item => {
                 html += `
                     <div class="news-item">
@@ -861,46 +1445,27 @@
                         </div>
                         <div class="news-content">${item.content}</div>
                         <div class="news-footer">
-                            <div class="source-info">
-                                ${item.sources.map(src => `<span class="source"><span class="source-badge">${src}</span></span>`).join('')}
-                            </div>
+                            <div class="source-info">${item.sources.map(src => `<span class="source"><span class="source-badge">${src}</span></span>`).join('')}</div>
                             <span class="timestamp">${item.timestamp}</span>
                         </div>
                     </div>
                 `;
             });
-
             html += `</div></section>`;
 
-            // Emerging Tensions
-            html += `
-                <section class="briefing-section">
-                    <h2>⚡ Emerging Tensions & Regional Dynamics</h2>
-                    <div class="tension-map">
-            `;
-
+            html += `<section class="briefing-section"><h2>Emerging Tensions & Regional Dynamics</h2><div class="tension-map">`;
             data.emerginTensions.forEach(item => {
-                let levelPercentage = item.level === 'high' ? 100 : item.level === 'medium' ? 50 : 25;
                 html += `
                     <div class="tension-item">
                         <div class="tension-actors">${item.actors}</div>
-                        <div class="tension-indicator">
-                            <div class="tension-level ${item.level}"></div>
-                        </div>
+                        <div class="tension-indicator"><div class="tension-level ${item.level}"></div></div>
                         <div style="min-width: 80px; text-align: right; font-size: 0.9rem; color: var(--text-secondary);">${item.description}</div>
                     </div>
                 `;
             });
-
             html += `</div></section>`;
 
-            // Recommended Readings
-            html += `
-                <section class="briefing-section">
-                    <h2>📚 Recommended Readings</h2>
-                    <ul class="reading-list">
-            `;
-
+            html += `<section class="briefing-section"><h2>Recommended Readings</h2><ul class="reading-list">`;
             data.readingList.forEach(item => {
                 html += `
                     <li class="reading-item">
@@ -908,59 +1473,287 @@
                             <div class="reading-title">${item.title}</div>
                             <div class="reading-publication">${item.publication}</div>
                         </div>
-                        <a href="${item.link}" class="reading-link">Read More →</a>
+                        <a href="${item.link}" class="reading-link">Read More &rarr;</a>
                     </li>
                 `;
             });
-
             html += `</ul></section>`;
 
             return html;
         }
 
-        // Form submission
         document.getElementById('briefingForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
             const areaOfFocus = document.getElementById('areaOfFocus').value.trim();
             const frequency = document.getElementById('updateFrequency').value;
             const contentContainer = document.getElementById('contentContainer');
 
             if (!areaOfFocus) {
-                contentContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
-                        <h3>Please enter an area of focus</h3>
-                        <p>Specify a major, region, or policy topic to generate your briefing</p>
-                    </div>
-                `;
+                contentContainer.innerHTML = `<div class="empty-state"><div class="empty-state-icon"></div><h3>Please enter an area of focus</h3><p>Specify a major, region, or policy topic to generate your briefing</p></div>`;
                 return;
             }
 
-            // Show loading
             contentContainer.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
                     <p>Generating briefing for: <strong>${areaOfFocus}</strong></p>
                     <p style="font-size: 0.9rem; margin-top: 0.5rem;">Aggregating articles from international sources...</p>
                 </div>
+                <div style="animation: loading 1.5s infinite;">
+                    <div style="background: var(--card-bg); padding: 2rem; margin: 1rem 0; border-radius: 8px;">
+                        <div class="skeleton skeleton-heading" style="width: 30%;"></div>
+                        <div class="skeleton skeleton-text" style="width: 100%;"></div>
+                        <div class="skeleton skeleton-text" style="width: 95%;"></div>
+                        <div class="skeleton skeleton-text" style="width: 90%;"></div>
+                    </div>
+                </div>
             `;
 
-            // Simulate processing delay
             setTimeout(() => {
                 const briefingData = generateBriefing(areaOfFocus, frequency);
-                contentContainer.innerHTML = renderBriefing(briefingData);
+                contentContainer.innerHTML = addTrendingSection(renderBriefing(briefingData), briefingData);
+                showToast('Briefing generated successfully', 'success', 2000);
             }, 1500);
         });
 
-        // Initial state
         document.getElementById('contentContainer').innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">🌐</div>
+                <div class="empty-state-icon"></div>
                 <h3>Welcome to Global Briefing Generator</h3>
                 <p>Enter your area of focus above to generate a personalized briefing synthesizing news from international sources</p>
             </div>
         `;
+
+        function switchPage(pageName) {
+            document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active'));
+            const selectedPage = document.getElementById(pageName);
+            if (selectedPage) selectedPage.classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleSetting(button) {
+            const isActive = button.classList.toggle('active');
+            button.setAttribute('aria-checked', isActive.toString());
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const accountForm = document.getElementById('accountForm');
+            if (accountForm) {
+                accountForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const email = document.getElementById('emailAddress').value;
+                    document.getElementById('profileName').textContent = firstName + ' ' + lastName;
+                    document.getElementById('profileEmail').textContent = email;
+                    showToast('Profile updated successfully', 'success');
+                });
+            }
+            updateStarStats();
+        });
+
+        const briefingData = {
+            '1': {
+                area: 'Middle East Policy', frequency: 'weekly',
+                stats: { articles: 8, sources: 5, regions: 3, alerts: 2 },
+                alerts: [
+                    { id: 1, type: 'urgent', title: 'Diplomatic Crisis', description: 'Escalating regional tensions', time: '2 hours ago' },
+                    { id: 2, type: 'warning', title: 'Trade Dispute', description: 'New tariffs announced', time: '4 hours ago' }
+                ],
+                keyDevelopments: [
+                    { id: 1, title: 'Middle East Policy Announcement', content: 'Major diplomatic initiative launched, involving key regional players and international partners.', priority: 'high', sources: ['Reuters', 'AP News'], timestamp: '2 hours ago' },
+                    { id: 2, title: 'Economic Impact Assessment', content: 'Trade experts analyze implications of recent regional developments affecting market stability.', priority: 'medium', sources: ['Bloomberg', 'Financial Times'], timestamp: '4 hours ago' }
+                ],
+                emerginTensions: [{ id: 1, actors: 'Country A ↔ Country B', level: 'high', description: 'Border tensions escalating' }],
+                readingList: [
+                    { id: 1, title: 'Middle East Geopolitics Analysis', publication: 'Foreign Affairs', link: '#' },
+                    { id: 2, title: 'Regional Economic Outlook', publication: 'Global Economics', link: '#' }
+                ]
+            },
+            '2': {
+                area: 'Climate Change & Environmental Policy', frequency: 'weekly',
+                stats: { articles: 12, sources: 7, regions: 6, alerts: 3 },
+                alerts: [
+                    { id: 1, type: 'warning', title: 'Climate Summit Updates', description: 'New agreement reached on emissions', time: '1 hour ago' },
+                    { id: 2, type: 'info', title: 'Carbon Markets Report', description: 'Green bonds trading active', time: '3 hours ago' }
+                ],
+                keyDevelopments: [
+                    { id: 1, title: 'Global Climate Agreement Finalized', content: 'Nations agree on ambitious carbon reduction targets and climate adaptation funding mechanisms for developing countries.', priority: 'high', sources: ['Reuters', 'BBC'], timestamp: '1 hour ago' },
+                    { id: 2, title: 'Renewable Energy Investments Surge', content: 'Record funding flows into solar and wind projects as corporations commit to net-zero targets.', priority: 'medium', sources: ['Bloomberg', 'Financial Times'], timestamp: '3 hours ago' }
+                ],
+                emerginTensions: [{ id: 1, actors: 'Developed Nations ↔ Developing Nations', level: 'medium', description: 'Dispute over climate finance' }],
+                readingList: [{ id: 1, title: 'Climate Action Strategy', publication: 'Environmental Science', link: '#' }]
+            },
+            '3': {
+                area: 'Southeast Asian Trade & Economic Integration', frequency: 'weekly',
+                stats: { articles: 10, sources: 6, regions: 5, alerts: 2 },
+                alerts: [{ id: 1, type: 'info', title: 'Trade Deal Signed', description: 'New regional partnership announced', time: '5 hours ago' }],
+                keyDevelopments: [
+                    { id: 1, title: 'ASEAN Trade Expansion', content: 'Regional bloc announces plans for deeper economic integration and supply chain optimization across member states.', priority: 'high', sources: ['Reuters', 'AP News'], timestamp: '5 hours ago' },
+                    { id: 2, title: 'Foreign Investment Growth', content: 'Southeast Asia attracts unprecedented levels of foreign direct investment from tech and manufacturing sectors.', priority: 'medium', sources: ['Bloomberg'], timestamp: '7 hours ago' }
+                ],
+                emerginTensions: [{ id: 1, actors: 'Regional Powers', level: 'low', description: 'Friendly competition for influence' }],
+                readingList: [{ id: 1, title: 'Southeast Asian Economic Report', publication: 'Trade Watch', link: '#' }]
+            }
+        };
+
+        function loadSavedBriefing(id) {
+            const data = briefingData[id];
+            if (data) {
+                switchPage('dashboard');
+                document.getElementById('areaOfFocus').value = data.area;
+                document.getElementById('updateFrequency').value = data.frequency;
+                const contentContainer = document.getElementById('contentContainer');
+                contentContainer.innerHTML = addTrendingSection(renderBriefing(data), data);
+            }
+        }
+
+        function deleteBriefing(id) {
+            if (confirm('Are you sure you want to delete this briefing?')) {
+                showToast('Briefing deleted successfully', 'success');
+            }
+        }
+
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.setAttribute('role', 'status');
+            toast.setAttribute('aria-live', 'polite');
+            toast.innerHTML = `<span>${message}</span><button class="toast-close" onclick="this.parentElement.remove()" aria-label="Close notification">&times;</button>`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+
+        function filterBriefings() {
+            const searchTerm = document.getElementById('briefingSearch').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value;
+            const cards = document.querySelectorAll('.saved-briefing-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('.briefing-title').textContent.toLowerCase();
+                const isStarred = card.querySelector('.star-btn').classList.contains('active');
+                let matches = title.includes(searchTerm);
+                if (filterType === 'starred') matches = matches && isStarred;
+                card.style.display = matches ? 'block' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            const existingEmpty = document.querySelector('.empty-search');
+            if (visibleCount === 0) {
+                if (!existingEmpty) {
+                    const container = document.getElementById('savedBriefingsContainer');
+                    const emptyMsg = document.createElement('div');
+                    emptyMsg.className = 'empty-search empty-state';
+                    emptyMsg.innerHTML = '<h3>No briefings found</h3><p>Try adjusting your search or filters</p>';
+                    container.appendChild(emptyMsg);
+                }
+            } else {
+                if (existingEmpty) existingEmpty.remove();
+            }
+        }
+
+        let starredBriefings = JSON.parse(localStorage.getItem('starredBriefings')) || [];
+
+        function toggleStar(button, briefingId) {
+            button.classList.toggle('active');
+            const isStarred = button.classList.contains('active');
+            if (isStarred) {
+                if (!starredBriefings.includes(briefingId)) starredBriefings.push(briefingId);
+                showToast('Briefing starred', 'success', 2000);
+            } else {
+                starredBriefings = starredBriefings.filter(id => id !== briefingId);
+                showToast('Briefing unstarred', 'info', 2000);
+            }
+            localStorage.setItem('starredBriefings', JSON.stringify(starredBriefings));
+            updateStarStats();
+        }
+
+        function updateStarStats() {
+            const starred = document.querySelectorAll('.star-btn.active').length;
+            const elem = document.getElementById('starredBriefings');
+            if (elem) elem.textContent = starred;
+        }
+
+        function exportPDF(briefingId) {
+            const content = document.getElementById('contentContainer');
+            if (!content.innerHTML.includes('Key Developments')) {
+                showToast('Please generate or load a briefing first', 'warning');
+                return;
+            }
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`<!DOCTYPE html><html><head><title>Briefing Export</title><style>body{font-family:Arial,sans-serif;color:#333;}h1,h2{color:#0d1f3c;}</style></head><body>${document.querySelector('#contentContainer').innerHTML}</body></html>`);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.print(); showToast('PDF export started', 'success', 2000); }, 250);
+        }
+
+        function shareBriefing(briefingId) {
+            const card = event.target.closest('.saved-briefing-card');
+            const email = prompt('Enter recipient email address:', '');
+            if (email && email.includes('@')) {
+                showToast('Briefing shared via email', 'success', 2000);
+            } else if (email && email !== '') {
+                showToast('Invalid email address', 'error', 2000);
+            }
+        }
+
+        function compareSelected() {
+            const selected = document.querySelectorAll('.briefing-checkbox:checked');
+            if (selected.length < 2) { showToast('Select at least 2 briefings to compare', 'warning'); return; }
+            const ids = Array.from(selected).map(cb => cb.value);
+            const data1 = briefingData[ids[0]];
+            const data2 = briefingData[ids[1]];
+            if (!data1 || !data2) return;
+
+            document.getElementById('comparisonContent').innerHTML = `
+                <div class="comparison-grid">
+                    <div>
+                        <h3 style="color: #5a8dd9; margin-bottom: 1rem;">${data1.area}</h3>
+                        <p><strong>Articles:</strong> ${data1.stats.articles}</p>
+                        <p><strong>Sources:</strong> ${data1.stats.sources}</p>
+                        <p><strong>Regions:</strong> ${data1.stats.regions}</p>
+                        <p><strong>Alerts:</strong> ${data1.stats.alerts}</p>
+                    </div>
+                    <div>
+                        <h3 style="color: #5a8dd9; margin-bottom: 1rem;">${data2.area}</h3>
+                        <p><strong>Articles:</strong> ${data2.stats.articles}</p>
+                        <p><strong>Sources:</strong> ${data2.stats.sources}</p>
+                        <p><strong>Regions:</strong> ${data2.stats.regions}</p>
+                        <p><strong>Alerts:</strong> ${data2.stats.alerts}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('comparisonModal').classList.add('active');
+            showToast('Comparison loaded', 'info', 2000);
+        }
+
+        function closeComparison() {
+            document.getElementById('comparisonModal').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'k' || e.key === 'K') {
+                    e.preventDefault();
+                    document.getElementById('briefingSearch')?.focus();
+                }
+            }
+        });
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('comparisonModal');
+            if (event.target === modal) closeComparison();
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            updateStarStats();
+        });
     </script>
 </body>
 </html>
