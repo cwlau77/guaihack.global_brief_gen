@@ -1030,70 +1030,7 @@
                     <button class="action-btn secondary" onclick="compareSelected()" style="flex: 0 1 auto;" aria-label="Compare selected briefings">Compare Selected</button>
                 </div>
 
-                <div id="savedBriefingsContainer">
-                    <div class="saved-briefing-card" data-type="Middle East Policy">
-                        <div class="briefing-meta">
-                            <div>
-                                <div class="briefing-title">Middle East Policy - Weekly Update</div>
-                                <div class="briefing-date">Saved on April 15, 2026</div>
-                            </div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;">
-                                <span style="background: #5a9fd4; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">8 articles</span>
-                                <input type="checkbox" class="briefing-checkbox" value="1" aria-label="Select briefing for comparison">
-                                <button class="star-btn" onclick="toggleStar(this, '1')" aria-label="Star this briefing" title="Star briefing"></button>
-                            </div>
-                        </div>
-                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Synthesizing recent developments in Middle Eastern diplomatic relations and regional stability issues...</p>
-                        <div class="briefing-actions">
-                            <button class="action-btn" onclick="loadSavedBriefing('1')" aria-label="View the full Middle East Policy briefing">View Briefing</button>
-                            <button class="action-btn secondary" onclick="exportPDF('1')" aria-label="Export briefing as PDF">Export PDF</button>
-                            <button class="action-btn secondary" onclick="shareBriefing('1')" aria-label="Share this briefing via email">Share</button>
-                            <button class="action-btn secondary" onclick="deleteBriefing('1')" aria-label="Delete this briefing">Delete</button>
-                        </div>
-                    </div>
-
-                    <div class="saved-briefing-card" data-type="Climate Change">
-                        <div class="briefing-meta">
-                            <div>
-                                <div class="briefing-title">Climate Change & Environmental Policy</div>
-                                <div class="briefing-date">Saved on April 10, 2026</div>
-                            </div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;">
-                                <span style="background: #5a9fd4; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">12 articles</span>
-                                <input type="checkbox" class="briefing-checkbox" value="2" aria-label="Select briefing for comparison">
-                                <button class="star-btn active" onclick="toggleStar(this, '2')" aria-label="Unstar this briefing" title="Unstar briefing"></button>
-                            </div>
-                        </div>
-                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Global climate initiatives, carbon reduction agreements, and international environmental cooperation framework...</p>
-                        <div class="briefing-actions">
-                            <button class="action-btn" onclick="loadSavedBriefing('2')" aria-label="View the full Climate Change briefing">View Briefing</button>
-                            <button class="action-btn secondary" onclick="exportPDF('2')" aria-label="Export briefing as PDF">Export PDF</button>
-                            <button class="action-btn secondary" onclick="shareBriefing('2')" aria-label="Share this briefing via email">Share</button>
-                            <button class="action-btn secondary" onclick="deleteBriefing('2')" aria-label="Delete this briefing">Delete</button>
-                        </div>
-                    </div>
-
-                    <div class="saved-briefing-card" data-type="Southeast Asian Trade">
-                        <div class="briefing-meta">
-                            <div>
-                                <div class="briefing-title">Southeast Asian Trade & Economic Integration</div>
-                                <div class="briefing-date">Saved on April 5, 2026</div>
-                            </div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;">
-                                <span style="background: #5a9fd4; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">10 articles</span>
-                                <input type="checkbox" class="briefing-checkbox" value="3" aria-label="Select briefing for comparison">
-                                <button class="star-btn" onclick="toggleStar(this, '3')" aria-label="Star this briefing" title="Star briefing"></button>
-                            </div>
-                        </div>
-                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Trade agreements, regional economic cooperation, and market developments in Southeast Asia...</p>
-                        <div class="briefing-actions">
-                            <button class="action-btn" onclick="loadSavedBriefing('3')" aria-label="View the full Southeast Asian Trade briefing">View Briefing</button>
-                            <button class="action-btn secondary" onclick="exportPDF('3')" aria-label="Export briefing as PDF">Export PDF</button>
-                            <button class="action-btn secondary" onclick="shareBriefing('3')" aria-label="Share this briefing via email">Share</button>
-                            <button class="action-btn secondary" onclick="deleteBriefing('3')" aria-label="Delete this briefing">Delete</button>
-                        </div>
-                    </div>
-                </div>
+                <div id="savedBriefingsContainer"></div>
             </section>
         </div>
 
@@ -1208,6 +1145,13 @@
     </footer>
 
     <script>
+        // ─── localStorage helpers ───────────────────────────────────────────
+        function lsGet(key, fallback) {
+            try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : fallback; }
+            catch(e) { return fallback; }
+        }
+        function lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+
         let trendingChart = null;
         let currentTrendingData = null;
         let selectedTopics = null;
@@ -1512,7 +1456,9 @@
             setTimeout(() => {
                 const briefingData = generateBriefing(areaOfFocus, frequency);
                 contentContainer.innerHTML = addTrendingSection(renderBriefing(briefingData), briefingData);
-                showToast('Briefing generated successfully', 'success', 2000);
+                // Auto-save to the briefings list
+                saveGeneratedBriefing(briefingData);
+                showToast('Briefing generated and saved', 'success', 2000);
             }, 1500);
         });
 
@@ -1535,9 +1481,36 @@
         function toggleSetting(button) {
             const isActive = button.classList.toggle('active');
             button.setAttribute('aria-checked', isActive.toString());
+            // Persist all toggle states by their aria-label
+            const key = button.getAttribute('aria-label') || button.closest('.setting-item')?.querySelector('.setting-title')?.textContent;
+            if (key) lsSet('setting:' + key, isActive);
+        }
+
+        function restoreSettings() {
+            document.querySelectorAll('.toggle-switch').forEach(btn => {
+                const key = btn.getAttribute('aria-label') || btn.closest('.setting-item')?.querySelector('.setting-title')?.textContent;
+                if (!key) return;
+                const saved = lsGet('setting:' + key, null);
+                if (saved === null) return;
+                if (saved) { btn.classList.add('active'); btn.setAttribute('aria-checked', 'true'); }
+                else { btn.classList.remove('active'); btn.setAttribute('aria-checked', 'false'); }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Restore profile
+            const profile = lsGet('userProfile', null);
+            if (profile) {
+                if (profile.firstName) document.getElementById('firstName').value = profile.firstName;
+                if (profile.lastName) document.getElementById('lastName').value = profile.lastName;
+                if (profile.email) document.getElementById('emailAddress').value = profile.email;
+                if (profile.organization) document.getElementById('organization').value = profile.organization;
+                if (profile.bio) document.getElementById('userBio').value = profile.bio;
+                const name = [profile.firstName, profile.lastName].filter(Boolean).join(' ');
+                if (name) { document.getElementById('profileName').textContent = name; }
+                if (profile.email) document.getElementById('profileEmail').textContent = profile.email;
+            }
+
             const accountForm = document.getElementById('accountForm');
             if (accountForm) {
                 accountForm.addEventListener('submit', function(e) {
@@ -1545,17 +1518,25 @@
                     const firstName = document.getElementById('firstName').value;
                     const lastName = document.getElementById('lastName').value;
                     const email = document.getElementById('emailAddress').value;
-                    document.getElementById('profileName').textContent = firstName + ' ' + lastName;
+                    const organization = document.getElementById('organization').value;
+                    const bio = document.getElementById('userBio').value;
+                    document.getElementById('profileName').textContent = [firstName, lastName].filter(Boolean).join(' ');
                     document.getElementById('profileEmail').textContent = email;
-                    showToast('Profile updated successfully', 'success');
+                    lsSet('userProfile', { firstName, lastName, email, organization, bio });
+                    showToast('Profile saved', 'success');
                 });
             }
-            updateStarStats();
+
+            restoreSettings();
+            renderSavedBriefingsList();
         });
 
-        const briefingData = {
+        // ─── Persisted briefing store ───────────────────────────────────────
+        const DEFAULT_BRIEFINGS = {
             '1': {
                 area: 'Middle East Policy', frequency: 'weekly',
+                savedDate: 'April 15, 2026', articleCount: 8,
+                description: 'Synthesizing recent developments in Middle Eastern diplomatic relations and regional stability issues...',
                 stats: { articles: 8, sources: 5, regions: 3, alerts: 2 },
                 alerts: [
                     { id: 1, type: 'urgent', title: 'Diplomatic Crisis', description: 'Escalating regional tensions', time: '2 hours ago' },
@@ -1573,6 +1554,8 @@
             },
             '2': {
                 area: 'Climate Change & Environmental Policy', frequency: 'weekly',
+                savedDate: 'April 10, 2026', articleCount: 12,
+                description: 'Global climate initiatives, carbon reduction agreements, and international environmental cooperation framework...',
                 stats: { articles: 12, sources: 7, regions: 6, alerts: 3 },
                 alerts: [
                     { id: 1, type: 'warning', title: 'Climate Summit Updates', description: 'New agreement reached on emissions', time: '1 hour ago' },
@@ -1587,6 +1570,8 @@
             },
             '3': {
                 area: 'Southeast Asian Trade & Economic Integration', frequency: 'weekly',
+                savedDate: 'April 5, 2026', articleCount: 10,
+                description: 'Trade agreements, regional economic cooperation, and market developments in Southeast Asia...',
                 stats: { articles: 10, sources: 6, regions: 5, alerts: 2 },
                 alerts: [{ id: 1, type: 'info', title: 'Trade Deal Signed', description: 'New regional partnership announced', time: '5 hours ago' }],
                 keyDevelopments: [
@@ -1598,21 +1583,122 @@
             }
         };
 
+        // Load briefings from storage, seeding defaults on first visit
+        function getBriefings() {
+            const stored = lsGet('briefings', null);
+            if (!stored) {
+                lsSet('briefings', DEFAULT_BRIEFINGS);
+                return DEFAULT_BRIEFINGS;
+            }
+            return stored;
+        }
+
+        function saveBriefingToStore(id, data) {
+            const store = getBriefings();
+            store[id] = data;
+            lsSet('briefings', store);
+        }
+
+        function removeBriefingFromStore(id) {
+            const store = getBriefings();
+            delete store[id];
+            lsSet('briefings', store);
+        }
+
+        // Render the saved briefings list from storage
+        function renderSavedBriefingsList() {
+            const store = getBriefings();
+            const starred = lsGet('starredBriefings', []);
+            const container = document.getElementById('savedBriefingsContainer');
+            if (!container) return;
+
+            const ids = Object.keys(store);
+            if (ids.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>No saved briefings</h3><p>Generate a briefing and save it to see it here.</p></div>';
+                updateSavedStats(store, starred);
+                return;
+            }
+
+            container.innerHTML = ids.map(id => {
+                const b = store[id];
+                const isStarred = starred.includes(id);
+                return `
+                    <div class="saved-briefing-card" data-type="${b.area}" data-id="${id}">
+                        <div class="briefing-meta">
+                            <div>
+                                <div class="briefing-title">${b.area}</div>
+                                <div class="briefing-date">Saved on ${b.savedDate}</div>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                                <span style="background: #5a9fd4; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">${b.articleCount} articles</span>
+                                <input type="checkbox" class="briefing-checkbox" value="${id}" aria-label="Select briefing for comparison">
+                                <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleStar(this, '${id}')" aria-label="${isStarred ? 'Unstar' : 'Star'} this briefing"></button>
+                            </div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">${b.description || ''}</p>
+                        <div class="briefing-actions">
+                            <button class="action-btn" onclick="loadSavedBriefing('${id}')">View Briefing</button>
+                            <button class="action-btn secondary" onclick="exportPDF('${id}')">Export PDF</button>
+                            <button class="action-btn secondary" onclick="shareBriefing('${id}')">Share</button>
+                            <button class="action-btn secondary" onclick="deleteBriefing('${id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateSavedStats(store, starred);
+        }
+
+        function updateSavedStats(store, starred) {
+            const ids = Object.keys(store);
+            const totalArticles = ids.reduce((sum, id) => sum + (store[id].articleCount || 0), 0);
+            const el = n => document.getElementById(n);
+            if (el('totalBriefings')) el('totalBriefings').textContent = ids.length;
+            if (el('totalArticles')) el('totalArticles').textContent = totalArticles;
+            if (el('starredBriefings')) el('starredBriefings').textContent = starred.filter(id => store[id]).length;
+        }
+
         function loadSavedBriefing(id) {
-            const data = briefingData[id];
+            const store = getBriefings();
+            const data = store[id];
             if (data) {
-                switchPage('dashboard');
+                // Navigate to dashboard nav btn
+                const navBtns = document.querySelectorAll('.nav-btn');
+                navBtns.forEach(b => b.classList.remove('active'));
+                navBtns[0].classList.add('active');
+                document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+                document.getElementById('dashboard').classList.add('active');
+
                 document.getElementById('areaOfFocus').value = data.area;
                 document.getElementById('updateFrequency').value = data.frequency;
-                const contentContainer = document.getElementById('contentContainer');
-                contentContainer.innerHTML = addTrendingSection(renderBriefing(data), data);
+                document.getElementById('contentContainer').innerHTML = addTrendingSection(renderBriefing(data), data);
             }
         }
 
         function deleteBriefing(id) {
             if (confirm('Are you sure you want to delete this briefing?')) {
-                showToast('Briefing deleted successfully', 'success');
+                removeBriefingFromStore(id);
+                // Also remove from starred
+                let starred = lsGet('starredBriefings', []);
+                starred = starred.filter(s => s !== id);
+                lsSet('starredBriefings', starred);
+                renderSavedBriefingsList();
+                showToast('Briefing deleted', 'success');
             }
+        }
+
+        // Save a newly generated briefing
+        function saveGeneratedBriefing(data) {
+            const id = Date.now().toString();
+            const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const toSave = Object.assign({}, data, {
+                savedDate: now,
+                articleCount: data.stats.articles,
+                description: `${data.area} briefing generated on ${now}.`
+            });
+            saveBriefingToStore(id, toSave);
+            renderSavedBriefingsList();
+            showToast('Briefing saved to your list', 'success', 2500);
         }
 
         function showToast(message, type = 'info', duration = 3000) {
@@ -1659,7 +1745,7 @@
             }
         }
 
-        let starredBriefings = JSON.parse(localStorage.getItem('starredBriefings')) || [];
+        let starredBriefings = lsGet('starredBriefings', []);
 
         function toggleStar(button, briefingId) {
             button.classList.toggle('active');
@@ -1671,14 +1757,15 @@
                 starredBriefings = starredBriefings.filter(id => id !== briefingId);
                 showToast('Briefing unstarred', 'info', 2000);
             }
-            localStorage.setItem('starredBriefings', JSON.stringify(starredBriefings));
+            lsSet('starredBriefings', starredBriefings);
             updateStarStats();
         }
 
         function updateStarStats() {
-            const starred = document.querySelectorAll('.star-btn.active').length;
+            const store = getBriefings();
+            const starred = lsGet('starredBriefings', []);
             const elem = document.getElementById('starredBriefings');
-            if (elem) elem.textContent = starred;
+            if (elem) elem.textContent = starred.filter(id => store[id]).length;
         }
 
         function exportPDF(briefingId) {
@@ -1707,8 +1794,9 @@
             const selected = document.querySelectorAll('.briefing-checkbox:checked');
             if (selected.length < 2) { showToast('Select at least 2 briefings to compare', 'warning'); return; }
             const ids = Array.from(selected).map(cb => cb.value);
-            const data1 = briefingData[ids[0]];
-            const data2 = briefingData[ids[1]];
+            const store = getBriefings();
+            const data1 = store[ids[0]];
+            const data2 = store[ids[1]];
             if (!data1 || !data2) return;
 
             document.getElementById('comparisonContent').innerHTML = `
@@ -1752,7 +1840,7 @@
         });
 
         window.addEventListener('DOMContentLoaded', function() {
-            updateStarStats();
+            renderSavedBriefingsList();
         });
     </script>
 </body>
