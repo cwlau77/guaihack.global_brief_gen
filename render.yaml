@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: guaihack-global-brief-gen
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: NEWSAPI_KEY
+        sync: false
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+      - key: MAX_ARTICLES_PER_SOURCE
+        value: "25"
+      - key: DEDUP_SIMILARITY_THRESHOLD
+        value: "0.85"
+      - key: RELEVANCE_SIMILARITY_THRESHOLD
+        value: "0.35"
+      - key: HOURS_LOOKBACK
+        value: "24"
