@@ -1377,6 +1377,317 @@
             header h1 { font-size: 1.6rem; }
             .input-section, .briefing-section, .form-section, .trending-section { padding: 1.5rem; }
         }
+
+        /* =====================================================================
+           Editorial v2 — generous type, open spacing, cinematic transitions.
+           Appended last so it overrides everything above.
+           ===================================================================== */
+
+        /* ----- Typography: bigger, more editorial ----- */
+        body { line-height: 1.7; font-size: 16.5px; }
+        @media (min-width: 1200px) { body { font-size: 17px; } }
+        h1, h2, h3, h4, .serif { letter-spacing: -0.022em; }
+        h1 { font-size: clamp(2.4rem, 4vw, 3.4rem); font-weight: 700; line-height: 1.08; }
+        h2 { font-size: clamp(1.7rem, 2.2vw, 2.15rem); font-weight: 600; line-height: 1.18; }
+        h3 { font-size: clamp(1.15rem, 1.4vw, 1.35rem); font-weight: 600; line-height: 1.3; }
+        header h1 { font-size: clamp(2rem, 3vw, 2.75rem); }
+        header .tagline { font-size: 1.02rem; margin-top: 0.35rem; }
+
+        /* ----- Spacing: let it breathe ----- */
+        .container { padding: 3.5rem 1.75rem 6rem; max-width: 1280px; }
+        .input-section,
+        .briefing-section,
+        .form-section,
+        .trending-section {
+            padding: 2.75rem 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .briefing-section + .briefing-section { margin-top: 0; }
+        .briefing-section h2,
+        .trending-section h2,
+        .form-section h2 { margin-bottom: 1.5rem; }
+        .briefing-section p,
+        .reading-publication,
+        .setting-description { line-height: 1.7; }
+
+        /* Key-development / news items get more room + serif titles */
+        .news-item,
+        .alert-card,
+        .tension-item,
+        .reading-item,
+        .setting-item,
+        .saved-briefing-card {
+            padding: 1.75rem 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .news-title,
+        .alert-title,
+        .reading-title,
+        .briefing-title {
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+            font-size: 1.35rem;
+            line-height: 1.3;
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            color: var(--wp-ink);
+        }
+        .news-content,
+        .reading-publication,
+        .alert-description {
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+        .historical-context {
+            font-size: 0.98rem;
+            line-height: 1.75;
+            padding: 1.1rem 1.25rem;
+        }
+
+        /* Stat cards — bolder numerals */
+        .stat-card,
+        .stat-card-detailed { padding: 1.75rem 1.5rem; }
+        .stat-number,
+        .stat-value-large {
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+            font-size: clamp(2rem, 3vw, 2.75rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        /* Analytics section — more presence */
+        .trending-section { padding: 3rem 2.5rem; }
+        .analytics-header { margin-bottom: 2rem; }
+        .analytics-subtitle { font-size: 1.02rem; line-height: 1.6; }
+        .analytics-card { padding: 1.75rem; }
+        .analytics-card-header h3 { font-size: 1.2rem; }
+        .chart-container { height: 360px; padding: 1.5rem; }
+
+        /* ----- Global transition baseline ----- */
+        *,
+        *::before,
+        *::after {
+            transition:
+                background-color .25s ease,
+                border-color .25s ease,
+                color .2s ease,
+                box-shadow .3s ease,
+                transform .25s cubic-bezier(.2, .8, .2, 1),
+                opacity .3s ease;
+        }
+        /* Transitions that shouldn't chain for inputs while typing */
+        input, textarea, select {
+            transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+        }
+
+        /* ----- Keyframes ----- */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translate3d(0, 14px, 0); }
+            to   { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(.97); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes shimmer {
+            0%   { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50%      { transform: scale(1.35); opacity: 0.65; }
+        }
+        @keyframes underlineGrow {
+            from { transform: scaleX(0); }
+            to   { transform: scaleX(1); }
+        }
+        @keyframes softPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 91, 255, .25); }
+            50%      { box-shadow: 0 0 0 10px rgba(99, 91, 255, 0); }
+        }
+
+        /* ----- Entrance animations ----- */
+        header,
+        .main-nav { animation: fadeSlideUp .7s cubic-bezier(.2, .8, .2, 1) both; }
+        .main-nav { animation-delay: .08s; }
+
+        .page-section.active {
+            animation: fadeSlideUp .6s cubic-bezier(.2, .8, .2, 1) both;
+        }
+        .page-section.active > * { animation: fadeSlideUp .65s cubic-bezier(.2, .8, .2, 1) both; }
+        .page-section.active > *:nth-child(1) { animation-delay: .05s; }
+        .page-section.active > *:nth-child(2) { animation-delay: .12s; }
+        .page-section.active > *:nth-child(3) { animation-delay: .19s; }
+        .page-section.active > *:nth-child(4) { animation-delay: .26s; }
+        .page-section.active > *:nth-child(5) { animation-delay: .33s; }
+        .page-section.active > *:nth-child(6) { animation-delay: .40s; }
+
+        /* News/alert/reading items stagger in */
+        .briefing-section .news-item,
+        .briefing-section .alert-card,
+        .briefing-section .tension-item,
+        .briefing-section .reading-item {
+            animation: fadeSlideUp .55s cubic-bezier(.2, .8, .2, 1) both;
+        }
+        .briefing-section .news-item:nth-child(1),
+        .briefing-section .alert-card:nth-child(1),
+        .briefing-section .tension-item:nth-child(1),
+        .briefing-section .reading-item:nth-child(1) { animation-delay: .05s; }
+        .briefing-section .news-item:nth-child(2),
+        .briefing-section .alert-card:nth-child(2),
+        .briefing-section .tension-item:nth-child(2),
+        .briefing-section .reading-item:nth-child(2) { animation-delay: .12s; }
+        .briefing-section .news-item:nth-child(3),
+        .briefing-section .alert-card:nth-child(3),
+        .briefing-section .tension-item:nth-child(3),
+        .briefing-section .reading-item:nth-child(3) { animation-delay: .19s; }
+        .briefing-section .news-item:nth-child(4),
+        .briefing-section .alert-card:nth-child(4),
+        .briefing-section .reading-item:nth-child(4) { animation-delay: .26s; }
+        .briefing-section .news-item:nth-child(n+5),
+        .briefing-section .reading-item:nth-child(n+5) { animation-delay: .33s; }
+
+        .stat-card,
+        .stat-card-detailed,
+        .analytics-card { animation: scaleIn .55s cubic-bezier(.2, .8, .2, 1) both; }
+        .analytics-card:nth-child(2) { animation-delay: .1s; }
+
+        .toast { animation: fadeSlideUp .35s cubic-bezier(.2, .8, .2, 1) both; }
+
+        /* ----- Hover interactions ----- */
+        .news-item,
+        .alert-card,
+        .tension-item,
+        .reading-item,
+        .saved-briefing-card,
+        .stat-card,
+        .stat-card-detailed,
+        .analytics-card,
+        .setting-item {
+            will-change: transform, box-shadow;
+        }
+        .news-item:hover,
+        .alert-card:hover,
+        .tension-item:hover,
+        .reading-item:hover,
+        .saved-briefing-card:hover,
+        .stat-card:hover,
+        .stat-card-detailed:hover,
+        .analytics-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--wp-divider);
+        }
+        .news-title,
+        .reading-title,
+        .briefing-title {
+            position: relative;
+        }
+        .reading-link {
+            position: relative;
+            overflow: hidden;
+        }
+        .reading-link::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            height: 2px;
+            background: currentColor;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+        }
+        .reading-link:hover::after { transform: scaleX(1); }
+
+        /* Nav underline on active */
+        .nav-btn { position: relative; overflow: hidden; }
+        .nav-btn.active {
+            animation: fadeIn .3s ease both;
+        }
+
+        /* Button microinteractions */
+        .btn-generate,
+        .action-btn,
+        .timing-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-generate:hover,
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-generate:active,
+        .action-btn:active { transform: translateY(0); }
+        .btn-generate::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255, 255, 255, .18);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width .45s ease, height .45s ease;
+        }
+        .btn-generate:active::before { width: 300px; height: 300px; }
+
+        /* Toggle switch — smooth spring */
+        .toggle-switch {
+            transition: background-color .25s ease, box-shadow .25s ease;
+        }
+        .toggle-switch::after {
+            transition: transform .28s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease;
+        }
+        .toggle-switch.active { animation: softPulse 1.2s ease 1; }
+
+        /* Inputs — subtle focus glow */
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--wp-accent-2);
+            box-shadow: 0 0 0 4px rgba(99, 91, 255, .12);
+        }
+
+        /* Source badges pop on hover */
+        .source-badge {
+            transition: transform .2s ease, background-color .2s ease;
+        }
+        .source:hover .source-badge {
+            transform: translateY(-1px);
+            background: var(--wp-ink);
+            color: #fff;
+        }
+
+        /* Star button spin on activate */
+        .star-btn.active {
+            animation: scaleIn .3s cubic-bezier(.2, 1.4, .4, 1) both;
+        }
+
+        /* Pulsing dot for analytics pills */
+        .analytics-pill-dot { animation: pulseDot 2.4s ease-in-out infinite; }
+        .analytics-pill:nth-child(2) .analytics-pill-dot { animation-delay: .4s; }
+        .analytics-pill:nth-child(3) .analytics-pill-dot { animation-delay: .8s; }
+
+        /* Loading spinner gets a serif-friendly ring */
+        .loading { padding: 4rem 2rem; }
+        .loading p { font-size: 1.05rem; margin-top: 1rem; }
+
+        /* Footer spacing */
+        footer { padding: 3rem 1.5rem; margin-top: 3rem; }
+
+        /* Reduced-motion respect */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
