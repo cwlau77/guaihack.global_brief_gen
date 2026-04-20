@@ -117,9 +117,19 @@ async def briefing_endpoint(req: BriefingRequest) -> Briefing:
 
     logger.info("post-processing article count: %d", len(articles))
     if not articles:
+        missing_keys = []
+        if not settings.newsapi_key:
+            missing_keys.append("NEWSAPI_KEY")
+        if not settings.huggingface_api_key:
+            missing_keys.append("HUGGINGFACE_API_KEY")
+        hint = (
+            f" Missing environment variables may be reducing recall: {', '.join(missing_keys)}."
+            if missing_keys
+            else ""
+        )
         raise HTTPException(
             status_code=422,
-            detail=f"No recent articles matched the focus '{focus}'. Try a broader phrase or a different topic.",
+            detail=f"No recent articles matched the focus '{focus}'. Try a broader phrase or a different topic.{hint}",
         )
 
     # Layer 4: synthesize structured briefing (Haiku by default, per settings.synthesis_model)

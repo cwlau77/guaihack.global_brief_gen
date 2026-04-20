@@ -5,6 +5,7 @@ from typing import Optional
 import httpx
 
 from backend.config import settings
+from backend.focus_terms import build_boolean_query
 from backend.models import Article
 
 logger = logging.getLogger("briefing.newsapi")
@@ -24,8 +25,9 @@ async def fetch_newsapi(focus: str, client: Optional[httpx.AsyncClient] = None) 
 
     # NOTE: free-tier NewsAPI delays articles by 24h, so we do not apply a `from` filter here;
     # we rely on sortBy=publishedAt to get the newest articles available to our plan.
+    query = build_boolean_query(focus)
     params = {
-        "q": focus,
+        "q": query,
         "language": "en",
         "sortBy": "publishedAt",
         "pageSize": settings.max_articles_per_source,
@@ -47,7 +49,7 @@ async def fetch_newsapi(focus: str, client: Optional[httpx.AsyncClient] = None) 
             await client.aclose()
 
     total_results = payload.get("totalResults", 0)
-    logger.info("NewsAPI totalResults=%d for focus=%r", total_results, focus)
+    logger.info("NewsAPI totalResults=%d for focus=%r query=%r", total_results, focus, query)
 
     articles: list[Article] = []
     for item in payload.get("articles", []):

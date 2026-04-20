@@ -3,25 +3,12 @@ import logging
 import numpy as np
 
 from backend.config import settings
+from backend.focus_terms import extract_focus_terms
 from backend.models import Article
 
 from .embeddings import cosine_similarity, embed_texts
 
 logger = logging.getLogger("briefing.relevance")
-
-# Common stopwords we never want to treat as relevance signals.
-_STOPWORDS = {
-    "the", "a", "an", "and", "or", "of", "in", "on", "for", "to", "by", "with",
-    "from", "at", "as", "is", "are", "was", "were", "be", "been", "news", "world",
-    "update", "daily", "briefing", "focus", "about", "over", "into", "amid",
-}
-
-
-def _extract_keywords(focus: str) -> list[str]:
-    """Keep short-but-meaningful tokens (EU, UK, US, AI, oil) — drop stopwords only."""
-    raw = [w.strip(".,;:!?()[]\"'").lower() for w in focus.split()]
-    return [w for w in raw if w and w not in _STOPWORDS and len(w) >= 2]
-
 
 def _keyword_hit(article: Article, keywords: list[str]) -> bool:
     if not keywords:
@@ -50,7 +37,7 @@ async def filter_by_relevance(
         logger.info("relevance skip for focus=%r: no articles to filter", focus)
         return articles, embeddings
 
-    keywords = _extract_keywords(focus)
+    keywords = extract_focus_terms(focus)
     logger.info(
         "relevance start for focus=%r: %d articles, %d keywords=%s, embeddings_shape=%s",
         focus,

@@ -2457,7 +2457,7 @@
                     <div class="empty-state">
                         <h3>Unable to generate briefing</h3>
                         <p>${escapeHtml(error.message)}</p>
-                        <p style="margin-top: 0.75rem;">If you expect richer synthesis, add API keys to <code>backend/.env</code>.</p>
+                        <p style="margin-top: 0.75rem;">If you expect richer synthesis on the live app, add the required API keys in your deployment environment settings.</p>
                     </div>
                 `;
                 showToast(error.message, 'error', 3500);

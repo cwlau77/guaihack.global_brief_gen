@@ -5,6 +5,7 @@ from typing import Optional
 import httpx
 
 from backend.config import settings
+from backend.focus_terms import build_boolean_query
 from backend.models import Article
 
 logger = logging.getLogger("briefing.gdelt")
@@ -19,8 +20,9 @@ async def fetch_gdelt(focus: str, client: Optional[httpx.AsyncClient] = None) ->
         client = httpx.AsyncClient(timeout=20.0)
 
     timespan = f"{max(settings.hours_lookback, 1)}h"
+    query = build_boolean_query(focus)
     params = {
-        "query": f'"{focus}" sourcelang:english',
+        "query": f"{query} sourcelang:english",
         "mode": "ArtList",
         "maxrecords": settings.max_articles_per_source,
         "format": "json",
@@ -42,7 +44,12 @@ async def fetch_gdelt(focus: str, client: Optional[httpx.AsyncClient] = None) ->
         if owns_client:
             await client.aclose()
 
-    logger.info("GDELT returned %d raw articles for focus=%r", len(payload.get("articles", [])), focus)
+    logger.info(
+        "GDELT returned %d raw articles for focus=%r query=%r",
+        len(payload.get("articles", [])),
+        focus,
+        query,
+    )
 
     articles: list[Article] = []
     for item in payload.get("articles", []):

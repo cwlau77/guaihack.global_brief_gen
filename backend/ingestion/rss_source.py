@@ -6,6 +6,7 @@ from time import mktime
 import feedparser
 
 from backend.config import settings
+from backend.focus_terms import extract_focus_terms
 from backend.models import Article
 
 logger = logging.getLogger("briefing.rss")
@@ -16,19 +17,6 @@ RSS_FEEDS: list[tuple[str, str]] = [
     ("The Guardian World", "https://www.theguardian.com/world/rss"),
     ("NPR World", "https://feeds.npr.org/1004/rss.xml"),
 ]
-
-
-_STOPWORDS = {
-    "the", "a", "an", "and", "or", "of", "in", "on", "for", "to", "by", "with",
-    "from", "at", "as", "is", "are", "was", "were", "be", "been", "news", "world",
-    "update", "daily", "briefing", "focus", "about", "over", "into", "amid",
-}
-
-
-def _focus_keywords(focus: str) -> list[str]:
-    raw = [w.strip(".,;:!?()[]\"'").lower() for w in focus.split()]
-    return [w for w in raw if w and w not in _STOPWORDS and len(w) >= 2]
-
 
 def _entry_to_article(outlet: str, entry) -> Article | None:
     title = getattr(entry, "title", "") or ""
@@ -90,7 +78,7 @@ async def fetch_rss(focus: str) -> list[Article]:
 
     Feedparser is blocking, so each feed is run in its own thread.
     """
-    keywords = _focus_keywords(focus)
+    keywords = extract_focus_terms(focus)
     tasks = [asyncio.to_thread(_parse_feed, outlet, url, keywords) for outlet, url in RSS_FEEDS]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
