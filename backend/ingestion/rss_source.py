@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from datetime import datetime, timezone
 from time import mktime
 
@@ -6,6 +7,8 @@ import feedparser
 
 from backend.config import settings
 from backend.models import Article
+
+logger = logging.getLogger("briefing.rss")
 
 RSS_FEEDS: list[tuple[str, str]] = [
     ("BBC World", "https://feeds.bbci.co.uk/news/world/rss.xml"),
@@ -27,47 +30,65 @@ def _focus_keywords(focus: str) -> list[str]:
     return [w for w in raw if w and w not in _STOPWORDS and len(w) >= 2]
 
 
+def _entry_to_article(outlet: str, entry) -> Article | None:
+    title = getattr(entry, "title", "") or ""
+    link = getattr(entry, "link", "") or ""
+    snippet = getattr(entry, "summary", "") or title
+    if not title or not link:
+        return None
+
+    published_at = None
+    struct_time = getattr(entry, "published_parsed", None) or getattr(entry, "updated_parsed", None)
+    if struct_time:
+        try:
+            published_at = datetime.fromtimestamp(mktime(struct_time), tz=timezone.utc)
+        except Exception:
+            published_at = None
+
+    return Article(
+        title=title,
+        snippet=snippet,
+        url=link,
+        source=outlet,
+        published_at=published_at,
+        country=None,
+        raw_source_type="rss",
+    )
+
+
 def _parse_feed(outlet: str, url: str, keywords: list[str]) -> list[Article]:
-    parsed = feedparser.parse(url)
+    try:
+        parsed = feedparser.parse(url)
+    except Exception as exc:
+        logger.warning("feed %s (%s) failed to parse: %s", outlet, url, exc)
+        return []
 
-    articles: list[Article] = []
-    for entry in parsed.entries[: settings.max_articles_per_source * 3]:
-        title = getattr(entry, "title", "") or ""
-        link = getattr(entry, "link", "") or ""
-        snippet = getattr(entry, "summary", "") or title
-        if not title or not link:
+    entries = list(parsed.entries[: settings.max_articles_per_source * 3])
+    filtered: list[Article] = []
+    raw: list[Article] = []
+    for entry in entries:
+        article = _entry_to_article(outlet, entry)
+        if article is None:
             continue
-
-        # Pre-filter by focus keywords so unfiltered world-news feeds don't flood
-        # the pipeline with off-topic articles (this was the "only-Iran" bug).
+        raw.append(article)
         if keywords:
-            haystack = f"{title} {snippet}".lower()
+            haystack = f"{article.title} {article.snippet}".lower()
             if not any(kw in haystack for kw in keywords):
                 continue
-
-        published_at = None
-        struct_time = getattr(entry, "published_parsed", None) or getattr(entry, "updated_parsed", None)
-        if struct_time:
-            try:
-                published_at = datetime.fromtimestamp(mktime(struct_time), tz=timezone.utc)
-            except Exception:
-                published_at = None
-
-        articles.append(
-            Article(
-                title=title,
-                snippet=snippet,
-                url=link,
-                source=outlet,
-                published_at=published_at,
-                country=None,
-                raw_source_type="rss",
-            )
-        )
-
-        if len(articles) >= settings.max_articles_per_source:
+        filtered.append(article)
+        if len(filtered) >= settings.max_articles_per_source:
             break
-    return articles
+
+    # If the focus filter was too strict, fall back to the raw top-K so the
+    # downstream relevance filter (embedding-based) has something to rank.
+    # Better than returning zero and failing the whole request.
+    if keywords and not filtered:
+        logger.info(
+            "feed %s: no entries matched focus keywords %s; falling back to %d raw entries",
+            outlet, keywords, min(len(raw), settings.max_articles_per_source),
+        )
+        return raw[: settings.max_articles_per_source]
+    return filtered
 
 
 async def fetch_rss(focus: str) -> list[Article]:
@@ -80,8 +101,10 @@ async def fetch_rss(focus: str) -> list[Article]:
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     articles: list[Article] = []
-    for result in results:
+    for (outlet, _), result in zip(RSS_FEEDS, results):
         if isinstance(result, Exception):
+            logger.warning("feed %s raised: %s", outlet, result)
             continue
+        logger.info("feed %s -> %d articles", outlet, len(result))
         articles.extend(result)
     return articles

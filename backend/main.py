@@ -53,12 +53,17 @@ async def _ingest_all(focus: str) -> list[Article]:
             return_exceptions=True,
         )
 
+    labels = ("newsapi", "gdelt", "rss")
     articles: list[Article] = []
-    for r in results:
+    per_source_counts: dict[str, int] = {}
+    for label, r in zip(labels, results):
         if isinstance(r, Exception):
-            logger.warning("ingestion source failed: %s", r)
+            logger.warning("ingestion source %s failed: %s", label, r)
+            per_source_counts[label] = 0
             continue
+        per_source_counts[label] = len(r)
         articles.extend(r)
+    logger.info("ingestion summary for focus=%r: %s", focus, per_source_counts)
     return articles
 
 
@@ -79,7 +84,18 @@ async def briefing_endpoint(req: BriefingRequest) -> Briefing:
     articles = await _ingest_all(focus)
     logger.info("ingested %d raw articles for focus=%r", len(articles), focus)
     if not articles:
-        raise HTTPException(status_code=502, detail="No articles could be fetched from any source.")
+        missing_keys = []
+        if not settings.newsapi_key:
+            missing_keys.append("NEWSAPI_KEY")
+        hint = (
+            f" (missing env vars: {', '.join(missing_keys)})"
+            if missing_keys
+            else " (all three upstream sources returned zero; check Render logs for HTTP errors from NewsAPI/GDELT, and try a broader focus)"
+        )
+        raise HTTPException(
+            status_code=502,
+            detail=f"No articles could be fetched from any source.{hint}",
+        )
 
     # Layer 3: process (embed -> dedupe -> relevance filter)
     texts = [f"{a.title}. {a.snippet}" for a in articles]

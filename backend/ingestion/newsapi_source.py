@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -6,12 +7,15 @@ import httpx
 from backend.config import settings
 from backend.models import Article
 
+logger = logging.getLogger("briefing.newsapi")
+
 NEWSAPI_EVERYTHING = "https://newsapi.org/v2/everything"
 
 
 async def fetch_newsapi(focus: str, client: Optional[httpx.AsyncClient] = None) -> list[Article]:
     """Query NewsAPI /everything for the focus phrase across the lookback window."""
     if not settings.newsapi_key:
+        logger.warning("NEWSAPI_KEY not set; skipping NewsAPI ingestion")
         return []
 
     owns_client = client is None
@@ -32,11 +36,18 @@ async def fetch_newsapi(focus: str, client: Optional[httpx.AsyncClient] = None) 
         resp = await client.get(NEWSAPI_EVERYTHING, params=params)
         resp.raise_for_status()
         payload = resp.json()
-    except Exception:
+    except httpx.HTTPStatusError as exc:
+        logger.warning("NewsAPI HTTP %s for focus=%r: %s", exc.response.status_code, focus, exc.response.text[:200])
+        return []
+    except Exception as exc:
+        logger.warning("NewsAPI request failed for focus=%r: %s", focus, exc)
         return []
     finally:
         if owns_client:
             await client.aclose()
+
+    total_results = payload.get("totalResults", 0)
+    logger.info("NewsAPI totalResults=%d for focus=%r", total_results, focus)
 
     articles: list[Article] = []
     for item in payload.get("articles", []):
