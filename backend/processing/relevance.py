@@ -1,9 +1,13 @@
+import logging
+
 import numpy as np
 
 from backend.config import settings
 from backend.models import Article
 
 from .embeddings import cosine_similarity, embed_texts
+
+logger = logging.getLogger("briefing.relevance")
 
 # Common stopwords we never want to treat as relevance signals.
 _STOPWORDS = {
@@ -43,15 +47,31 @@ async def filter_by_relevance(
     articles to leak into the synthesis prompt.
     """
     if not articles:
+        logger.info("relevance skip for focus=%r: no articles to filter", focus)
         return articles, embeddings
 
     keywords = _extract_keywords(focus)
+    logger.info(
+        "relevance start for focus=%r: %d articles, %d keywords=%s, embeddings_shape=%s",
+        focus,
+        len(articles),
+        len(keywords),
+        keywords,
+        tuple(embeddings.shape),
+    )
 
     focus_emb = await embed_texts([focus])
     if focus_emb.size == 0 or embeddings.size == 0:
         # Embedding unavailable — keyword-only filter, strict (no fallback).
         kept = [(i, a) for i, a in enumerate(articles) if _keyword_hit(a, keywords)]
+        logger.warning(
+            "relevance fallback for focus=%r: keyword-only mode kept %d/%d articles",
+            focus,
+            len(kept),
+            len(articles),
+        )
         if not kept:
+            logger.warning("relevance reject for focus=%r: keyword-only mode matched zero articles", focus)
             return [], np.zeros((0, embeddings.shape[1] if embeddings.ndim == 2 else 0), dtype=np.float32)
         idx = [i for i, _ in kept]
         return [a for _, a in kept], embeddings[idx] if embeddings.size else embeddings
@@ -65,6 +85,18 @@ async def filter_by_relevance(
             kept_indices.append(i)
 
     if not kept_indices:
+        logger.warning(
+            "relevance reject for focus=%r: semantic+keyword filter matched zero articles at threshold %.2f",
+            focus,
+            threshold,
+        )
         return [], np.zeros((0, embeddings.shape[1]), dtype=np.float32)
 
+    logger.info(
+        "relevance keep for focus=%r: semantic+keyword filter kept %d/%d articles at threshold %.2f",
+        focus,
+        len(kept_indices),
+        len(articles),
+        threshold,
+    )
     return [articles[i] for i in kept_indices], embeddings[kept_indices]

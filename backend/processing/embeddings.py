@@ -1,9 +1,12 @@
+import logging
 from typing import Optional
 
 import httpx
 import numpy as np
 
 from backend.config import settings
+
+logger = logging.getLogger("briefing.embeddings")
 
 HF_FEATURE_EXTRACTION_URL = (
     f"https://api-inference.huggingface.co/models/{settings.embedding_model}"
@@ -18,6 +21,7 @@ async def embed_texts(texts: list[str], client: Optional[httpx.AsyncClient] = No
     if not texts:
         return np.zeros((0, 0), dtype=np.float32)
     if not settings.huggingface_api_key:
+        logger.warning("HUGGINGFACE_API_KEY not set; embeddings will be skipped")
         return np.zeros((0, 0), dtype=np.float32)
 
     owns_client = client is None
@@ -31,7 +35,14 @@ async def embed_texts(texts: list[str], client: Optional[httpx.AsyncClient] = No
         resp = await client.post(HF_FEATURE_EXTRACTION_URL, headers=headers, json=body)
         resp.raise_for_status()
         data = resp.json()
-    except Exception:
+    except httpx.HTTPStatusError as exc:
+        logger.warning(
+            "HuggingFace HTTP %s embedding %d texts: %s",
+            exc.response.status_code, len(texts), exc.response.text[:200],
+        )
+        return np.zeros((0, 0), dtype=np.float32)
+    except Exception as exc:
+        logger.warning("HuggingFace embedding request failed: %s", exc)
         return np.zeros((0, 0), dtype=np.float32)
     finally:
         if owns_client:

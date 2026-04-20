@@ -65,12 +65,10 @@ def _parse_feed(outlet: str, url: str, keywords: list[str]) -> list[Article]:
 
     entries = list(parsed.entries[: settings.max_articles_per_source * 3])
     filtered: list[Article] = []
-    raw: list[Article] = []
     for entry in entries:
         article = _entry_to_article(outlet, entry)
         if article is None:
             continue
-        raw.append(article)
         if keywords:
             haystack = f"{article.title} {article.snippet}".lower()
             if not any(kw in haystack for kw in keywords):
@@ -79,15 +77,11 @@ def _parse_feed(outlet: str, url: str, keywords: list[str]) -> list[Article]:
         if len(filtered) >= settings.max_articles_per_source:
             break
 
-    # If the focus filter was too strict, fall back to the raw top-K so the
-    # downstream relevance filter (embedding-based) has something to rank.
-    # Better than returning zero and failing the whole request.
-    if keywords and not filtered:
-        logger.info(
-            "feed %s: no entries matched focus keywords %s; falling back to %d raw entries",
-            outlet, keywords, min(len(raw), settings.max_articles_per_source),
-        )
-        return raw[: settings.max_articles_per_source]
+    # No fallback on empty. An earlier version returned raw top-K when the
+    # keyword filter matched zero — that regressed to the "only-Iran" bug,
+    # because world-news RSS frontpages are dominated by whatever is currently
+    # in the news cycle (right now: Iran/Israel/war). If the focus doesn't
+    # match this feed, NewsAPI + GDELT will supply articles instead.
     return filtered
 
 

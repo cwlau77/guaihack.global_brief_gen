@@ -102,7 +102,15 @@ async def briefing_endpoint(req: BriefingRequest) -> Briefing:
     embeddings = await embed_texts(texts)
 
     if embeddings.size == 0:
-        logger.warning("embedding call returned empty; skipping dedup/relevance")
+        logger.warning(
+            "embedding call returned empty (HF key missing or rate-limited); "
+            "running keyword-only relevance filter so off-topic articles still get cut",
+        )
+        # Run relevance filter with an empty embedding matrix. It will detect this
+        # and fall back to a strict keyword match, which is still much better than
+        # letting every ingested article (including off-topic RSS world-news items)
+        # go straight into the synthesis prompt.
+        articles, embeddings = await filter_by_relevance(focus, articles, embeddings)
     else:
         articles, embeddings = deduplicate(articles, embeddings)
         articles, embeddings = await filter_by_relevance(focus, articles, embeddings)
