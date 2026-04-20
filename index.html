@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Briefing Generator</title>
+    <title>Atlas Brief | Global Intelligence Workspace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -999,6 +999,50 @@
         }
         header h1 { color: var(--wp-ink); font-size: 2.1rem; letter-spacing: -0.02em; }
         .tagline { color: var(--wp-muted); font-weight: 400; font-size: 0.98rem; letter-spacing: 0; }
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .brand-mark {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(188, 220, 255, 0.95), rgba(188, 220, 255, 0) 34%),
+                linear-gradient(145deg, #0b1d38, #173763 55%, #28548f);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 14px 28px rgba(16, 34, 63, 0.22);
+            border: 1px solid rgba(34, 71, 118, 0.18);
+            flex-shrink: 0;
+        }
+        .brand-mark svg {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+        .brand-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.3rem;
+            color: var(--wp-accent);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .brand-eyebrow::before {
+            content: "";
+            width: 0.45rem;
+            height: 0.45rem;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #8cb8ff, #3c77c8);
+            box-shadow: 0 0 0 0.25rem rgba(92, 133, 204, 0.14);
+        }
+        .brand-copy h1 { margin-bottom: 0.25rem; }
+        .brand-copy .tagline { max-width: 38rem; }
 
         /* ---------- Navigation ---------- */
         .main-nav { gap: 0.25rem; }
@@ -1376,6 +1420,16 @@
             header { padding: 1.25rem 1rem; }
             header h1 { font-size: 1.6rem; }
             .input-section, .briefing-section, .form-section, .trending-section { padding: 1.5rem; }
+            .brand-lockup { align-items: flex-start; }
+            .brand-mark {
+                width: 3.35rem;
+                height: 3.35rem;
+                border-radius: 0.9rem;
+            }
+            .brand-mark svg {
+                width: 2.1rem;
+                height: 2.1rem;
+            }
         }
 
         /* =====================================================================
@@ -1709,9 +1763,23 @@
     <header>
         <div class="header-container">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1.5rem; flex-wrap: wrap;">
-                <div>
-                    <h1>Global Briefing Generator</h1>
-                    <p class="tagline">Stay informed on international developments tailored to your interests</p>
+                <div class="brand-lockup">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="20" stroke="#DCEBFF" stroke-width="2.4"/>
+                            <path d="M12 32H52" stroke="#DCEBFF" stroke-width="2.4" stroke-linecap="round"/>
+                            <path d="M32 12C26 18 22.8 25 22.8 32C22.8 39 26 46 32 52" stroke="#DCEBFF" stroke-width="2.4" stroke-linecap="round"/>
+                            <path d="M32 12C38 18 41.2 25 41.2 32C41.2 39 38 46 32 52" stroke="#DCEBFF" stroke-width="2.4" stroke-linecap="round"/>
+                            <path d="M18 22.8C22.2 25.3 27.1 26.5 32 26.5C36.9 26.5 41.8 25.3 46 22.8" stroke="#8CC4FF" stroke-width="2.1" stroke-linecap="round"/>
+                            <path d="M18 41.2C22.2 38.7 27.1 37.5 32 37.5C36.9 37.5 41.8 38.7 46 41.2" stroke="#8CC4FF" stroke-width="2.1" stroke-linecap="round"/>
+                            <path d="M45 17L49 21L58 12" stroke="#8CFFDA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="brand-copy">
+                        <div class="brand-eyebrow">Global Intelligence Workspace</div>
+                        <h1>Atlas Brief</h1>
+                        <p class="tagline">Daily geopolitical intelligence for the regions, policy tracks, and international signals you need to follow.</p>
+                    </div>
                 </div>
                 <nav class="main-nav">
                     <button class="nav-btn active" onclick="switchPage('dashboard', this)" aria-label="Dashboard page">Dashboard</button>
@@ -1727,7 +1795,7 @@
         <!-- Dashboard Page -->
         <div id="dashboard" class="page-section active">
             <section class="input-section">
-                <h2>Customize Your Briefing</h2>
+                <h2>Build Today&apos;s Brief</h2>
                 <form id="briefingForm" aria-label="Generate briefing form">
                     <div class="form-group">
                         <div class="input-wrapper">
@@ -1918,7 +1986,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2026 Global Briefing Generator. Powered by AI with aggregated international news sources.</p>
+        <p>&copy; 2026 Atlas Brief. Multi-source global monitoring for policy, markets, and regional risk.</p>
     </footer>
 
     <script>
@@ -2398,8 +2466,8 @@
 
         document.getElementById('contentContainer').innerHTML = `
             <div class="empty-state">
-                <h3>Welcome to Global Briefing Generator</h3>
-                <p>Enter your area of focus above to generate a personalized briefing from the live backend.</p>
+                <h3>Welcome to Atlas Brief</h3>
+                <p>Enter a region, issue, or policy track above to generate a branded daily brief with source-linked developments, tensions, and priority alerts.</p>
             </div>
         `;
 
