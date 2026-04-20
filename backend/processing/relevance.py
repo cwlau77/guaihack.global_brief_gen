@@ -47,7 +47,12 @@ async def filter_by_relevance(
         tuple(embeddings.shape),
     )
 
-    focus_emb = await embed_texts([focus])
+    # Embed the expanded focus (e.g. "climate" -> "climate climate change carbon
+    # emissions renewable energy transition...") so the focus vector spans topic
+    # synonyms — this dramatically improves recall for single-word focuses and
+    # makes bare tokens like "climate" match articles about "carbon" or "net zero".
+    focus_text = " ".join(keywords) if keywords else focus
+    focus_emb = await embed_texts([focus_text])
     if focus_emb.size == 0 or embeddings.size == 0:
         # Embedding unavailable — keyword-only filter, strict (no fallback).
         kept = [(i, a) for i, a in enumerate(articles) if _keyword_hit(a, keywords)]

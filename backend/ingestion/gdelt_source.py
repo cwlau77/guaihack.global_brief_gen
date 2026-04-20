@@ -1,4 +1,6 @@
+import asyncio
 import logging
+import random
 from datetime import datetime
 from typing import Optional
 
@@ -11,6 +13,11 @@ from backend.models import Article
 logger = logging.getLogger("briefing.gdelt")
 
 GDELT_DOC_API = "https://api.gdeltproject.org/api/v2/doc/doc"
+
+# GDELT enforces ~1 request per 5s per IP. Render uses shared egress IPs which
+# often trip this limit. One retry with jittered backoff resolves most 429s
+# without blowing the request timeout budget.
+_GDELT_RETRY_DELAY_SECONDS = 5.5
 
 
 async def fetch_gdelt(focus: str, client: Optional[httpx.AsyncClient] = None) -> list[Article]:
@@ -30,19 +37,37 @@ async def fetch_gdelt(focus: str, client: Optional[httpx.AsyncClient] = None) ->
         "sort": "DateDesc",
     }
 
+    payload = None
     try:
-        resp = await client.get(GDELT_DOC_API, params=params)
-        resp.raise_for_status()
-        payload = resp.json()
-    except httpx.HTTPStatusError as exc:
-        logger.warning("GDELT HTTP %s for focus=%r: %s", exc.response.status_code, focus, exc.response.text[:200])
-        return []
+        for attempt in (1, 2):
+            try:
+                resp = await client.get(GDELT_DOC_API, params=params)
+                resp.raise_for_status()
+                payload = resp.json()
+                break
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code == 429 and attempt == 1:
+                    backoff = _GDELT_RETRY_DELAY_SECONDS + random.random()
+                    logger.info(
+                        "GDELT 429 for focus=%r; retrying once after %.1fs backoff",
+                        focus, backoff,
+                    )
+                    await asyncio.sleep(backoff)
+                    continue
+                logger.warning(
+                    "GDELT HTTP %s for focus=%r: %s",
+                    exc.response.status_code, focus, exc.response.text[:200],
+                )
+                return []
     except Exception as exc:
         logger.warning("GDELT request failed for focus=%r: %s", focus, exc)
         return []
     finally:
         if owns_client:
             await client.aclose()
+
+    if payload is None:
+        return []
 
     logger.info(
         "GDELT returned %d raw articles for focus=%r query=%r",

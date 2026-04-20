@@ -98,33 +98,20 @@ async def briefing_endpoint(req: BriefingRequest) -> Briefing:
         )
 
     # Layer 3: process (embed -> dedupe -> relevance filter)
+    # Embedding is now a local TF-IDF hashing vectorizer — no external calls,
+    # no API key required, no rate limits. It returns a populated matrix
+    # unconditionally (unless the input list is empty).
     texts = [f"{a.title}. {a.snippet}" for a in articles]
     embeddings = await embed_texts(texts)
 
-    if embeddings.size == 0:
-        logger.warning(
-            "embedding call returned empty (HF key missing or rate-limited); "
-            "running keyword-only relevance filter so off-topic articles still get cut",
-        )
-        # Run relevance filter with an empty embedding matrix. It will detect this
-        # and fall back to a strict keyword match, which is still much better than
-        # letting every ingested article (including off-topic RSS world-news items)
-        # go straight into the synthesis prompt.
-        articles, embeddings = await filter_by_relevance(focus, articles, embeddings)
-    else:
-        articles, embeddings = deduplicate(articles, embeddings)
-        articles, embeddings = await filter_by_relevance(focus, articles, embeddings)
+    articles, embeddings = deduplicate(articles, embeddings)
+    articles, embeddings = await filter_by_relevance(focus, articles, embeddings)
 
     logger.info("post-processing article count: %d", len(articles))
     if not articles:
-        missing_keys = []
-        if not settings.newsapi_key:
-            missing_keys.append("NEWSAPI_KEY")
-        if not settings.huggingface_api_key:
-            missing_keys.append("HUGGINGFACE_API_KEY")
         hint = (
-            f" Missing environment variables may be reducing recall: {', '.join(missing_keys)}."
-            if missing_keys
+            " Missing environment variable NEWSAPI_KEY may be reducing recall."
+            if not settings.newsapi_key
             else ""
         )
         raise HTTPException(

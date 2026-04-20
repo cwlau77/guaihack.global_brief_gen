@@ -13,8 +13,9 @@ services:
         sync: false
       - key: NEWSAPI_KEY
         sync: false
-      - key: HUGGINGFACE_API_KEY
-        sync: false
+      # HUGGINGFACE_API_KEY is no longer required — embeddings are computed
+      # locally via a numpy TF-IDF hashing vectorizer. Safe to leave any existing
+      # value set, it will be ignored.
       - key: MAX_ARTICLES_PER_SOURCE
         value: "15"
       - key: DEDUP_SIMILARITY_THRESHOLD
