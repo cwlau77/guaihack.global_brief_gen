@@ -253,7 +253,7 @@ async def synthesize_briefing(focus: str, articles: list[Article]) -> Briefing:
 
     response = await client.messages.create(
         model=settings.synthesis_model,
-        max_tokens=8000,
+        max_tokens=4000,
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": _build_user_prompt(focus, articles)}],
     )

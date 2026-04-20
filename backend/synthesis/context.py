@@ -35,17 +35,25 @@ async def _context_for_development(client: AsyncAnthropic, dev: KeyDevelopment) 
 
 
 async def enrich_with_historical_context(briefing: Briefing) -> Briefing:
-    """Attach a short Haiku-generated historical-context paragraph to each key development."""
+    """Attach a short Haiku-generated historical-context paragraph to the top
+    `context_enrichment_limit` key developments. Remaining developments are
+    returned without context to keep total response time manageable.
+    """
     if not briefing.key_developments or not settings.anthropic_api_key:
+        return briefing
+
+    limit = max(0, settings.context_enrichment_limit)
+    targets = briefing.key_developments[:limit]
+    if not targets:
         return briefing
 
     client = AsyncAnthropic(api_key=settings.anthropic_api_key)
     results = await asyncio.gather(
-        *(_context_for_development(client, dev) for dev in briefing.key_developments),
+        *(_context_for_development(client, dev) for dev in targets),
         return_exceptions=True,
     )
 
-    for dev, ctx in zip(briefing.key_developments, results):
+    for dev, ctx in zip(targets, results):
         if isinstance(ctx, str) and ctx:
             dev.historical_context = ctx
     return briefing

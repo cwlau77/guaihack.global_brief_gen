@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Briefing Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -911,6 +914,469 @@
             h1, h2 { page-break-after: avoid; }
             @page { margin: 2cm; }
         }
+
+        /* ================================================================
+           Light-theme override — Washington Post typography + Stripe polish
+           Intentionally loaded last so these rules win via cascade order.
+           ================================================================ */
+
+        :root {
+            --wp-ink:        #0f1115;
+            --wp-body:       #1f2328;
+            --wp-muted:      #54595f;
+            --wp-subtle:     #6b7178;
+            --wp-hairline:   #e3e6ea;
+            --wp-divider:    #d1d5db;
+            --wp-page:       #ffffff;
+            --wp-surface:    #ffffff;
+            --wp-surface-2:  #f7f8fa;
+            --wp-surface-3:  #eff1f4;
+            --wp-accent:     #0a2540;   /* Stripe-ish deep navy */
+            --wp-accent-2:   #635bff;   /* Stripe purple */
+            --wp-accent-tint:#eef0ff;
+            --wp-critical:   #b91c1c;
+            --wp-critical-bg:#fef2f2;
+            --wp-high:       #b45309;
+            --wp-high-bg:    #fffbeb;
+            --wp-elevated:   #0369a1;
+            --wp-elevated-bg:#f0f9ff;
+            --wp-success:    #047857;
+            --wp-success-bg: #ecfdf5;
+            --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.04);
+            --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+            --shadow-md: 0 4px 8px -2px rgba(16, 24, 40, 0.06), 0 2px 4px -2px rgba(16, 24, 40, 0.04);
+            --shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, 0.06), 0 4px 6px -2px rgba(16, 24, 40, 0.04);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+
+            /* Backward-compat aliases so existing var() lookups pick up the new palette */
+            --primary-color: var(--wp-accent);
+            --secondary-color: var(--wp-accent);
+            --accent-color: var(--wp-accent-2);
+            --background: var(--wp-page);
+            --card-bg: var(--wp-surface);
+            --border-color: var(--wp-hairline);
+            --text-primary: var(--wp-body);
+            --text-secondary: var(--wp-muted);
+            --alert-urgent: var(--wp-critical);
+            --alert-warning: var(--wp-high);
+            --alert-info: var(--wp-elevated);
+            --success-color: var(--wp-success);
+        }
+
+        html { background: var(--wp-page); }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            font-feature-settings: 'cv11', 'ss01', 'ss03';
+            background: var(--wp-surface-2);
+            color: var(--wp-body);
+            line-height: 1.6;
+            letter-spacing: -0.005em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1, h2, h3, h4, .serif {
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif;
+            color: var(--wp-ink);
+            letter-spacing: -0.015em;
+        }
+
+        h1 { font-weight: 700; font-size: 2.5rem; line-height: 1.15; }
+        h2 { font-weight: 600; font-size: 1.6rem; line-height: 1.25; }
+        h3 { font-weight: 600; font-size: 1.2rem; line-height: 1.3; }
+
+        code, pre, .mono { font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace; }
+
+        /* ---------- Header ---------- */
+        header {
+            background: var(--wp-page);
+            color: var(--wp-ink);
+            border-bottom: 1px solid var(--wp-hairline);
+            padding: 1.75rem 2rem;
+            box-shadow: none;
+        }
+        header h1 { color: var(--wp-ink); font-size: 2.1rem; letter-spacing: -0.02em; }
+        .tagline { color: var(--wp-muted); font-weight: 400; font-size: 0.98rem; letter-spacing: 0; }
+
+        /* ---------- Navigation ---------- */
+        .main-nav { gap: 0.25rem; }
+        .nav-btn {
+            background: transparent;
+            color: var(--wp-muted);
+            border: 1px solid transparent;
+            padding: 0.55rem 0.9rem;
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 0;
+            transition: background .15s ease, color .15s ease, border-color .15s ease;
+        }
+        .nav-btn:hover { background: var(--wp-surface-3); color: var(--wp-ink); border-color: transparent; }
+        .nav-btn.active { background: var(--wp-ink); color: #fff; border-color: var(--wp-ink); }
+        .nav-btn.active:hover { background: #000; }
+
+        /* ---------- Container / page ---------- */
+        .container { padding: 2.5rem 1.5rem 4rem; }
+
+        /* ---------- Generic card/section polish ---------- */
+        .input-section,
+        .briefing-section,
+        .form-section,
+        .trending-section {
+            background: var(--wp-surface);
+            border: 1px solid var(--wp-hairline);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 2rem;
+        }
+        .input-section h2,
+        .briefing-section h2,
+        .form-section h2,
+        .trending-section h2 {
+            color: var(--wp-ink);
+            font-family: 'Source Serif 4', Georgia, serif;
+            border-bottom: 1px solid var(--wp-hairline);
+            padding-bottom: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        /* ---------- Form fields ---------- */
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea,
+        .form-field input,
+        .form-field textarea,
+        .search-box {
+            background: #fff;
+            color: var(--wp-body);
+            border: 1px solid var(--wp-divider);
+            border-radius: var(--radius-sm);
+            padding: 0.7rem 0.85rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color .15s ease, box-shadow .15s ease;
+            box-shadow: var(--shadow-xs);
+        }
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        textarea::placeholder,
+        .search-box::placeholder { color: #9aa1a9; }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+            -webkit-text-fill-color: var(--wp-body) !important;
+            border-color: var(--wp-divider) !important;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus,
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .search-box:focus {
+            outline: none;
+            border-color: var(--wp-accent-2);
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.15);
+        }
+
+        label,
+        .form-field label {
+            color: var(--wp-ink);
+            font-weight: 600;
+            font-size: 0.88rem;
+            letter-spacing: 0;
+        }
+
+        /* ---------- Buttons ---------- */
+        .btn-generate,
+        .action-btn {
+            background: var(--wp-ink);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-xs);
+            padding: 0.7rem 1.2rem;
+            font-size: 0.92rem;
+        }
+        .btn-generate:hover,
+        .action-btn:hover { background: #000; box-shadow: var(--shadow-sm); }
+        .btn-generate:active { transform: translateY(1px); }
+
+        .btn-clear {
+            background: #fff;
+            color: var(--wp-body);
+            border: 1px solid var(--wp-divider);
+            font-weight: 500;
+            box-shadow: var(--shadow-xs);
+        }
+        .btn-clear:hover { background: var(--wp-surface-2); color: var(--wp-ink); }
+
+        .action-btn.secondary {
+            background: #fff;
+            color: var(--wp-ink);
+            border: 1px solid var(--wp-divider);
+        }
+        .action-btn.secondary:hover { background: var(--wp-surface-2); color: var(--wp-ink); border-color: var(--wp-muted); }
+
+        /* ---------- News / briefing items ---------- */
+        .news-item,
+        .reading-item,
+        .saved-briefing-card,
+        .setting-item,
+        .tension-map,
+        .stat-card-detailed {
+            background: var(--wp-surface);
+            border: 1px solid var(--wp-hairline);
+            border-left: 3px solid var(--wp-accent-2);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-xs);
+        }
+        .news-item:hover,
+        .reading-item:hover,
+        .saved-briefing-card:hover { box-shadow: var(--shadow-md); transform: none; }
+
+        .news-title,
+        .reading-title,
+        .briefing-title {
+            font-family: 'Source Serif 4', Georgia, serif;
+            color: var(--wp-ink);
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .alert-title { font-family: 'Source Serif 4', Georgia, serif; color: var(--wp-ink); font-weight: 600; }
+        .news-content,
+        .alert-description,
+        .reading-publication,
+        .briefing-date,
+        .alert-meta { color: var(--wp-muted); }
+
+        /* ---------- Alerts (severity colors) ---------- */
+        .alert-card { background: var(--wp-surface); border: 1px solid var(--wp-hairline); box-shadow: var(--shadow-xs); }
+        .alert-card.urgent { border-left: 4px solid var(--wp-critical); background: var(--wp-critical-bg); }
+        .alert-card.warning { border-left: 4px solid var(--wp-high); background: var(--wp-high-bg); }
+        .alert-card.info { border-left: 4px solid var(--wp-elevated); background: var(--wp-elevated-bg); }
+        .alert-card.urgent .alert-title { color: var(--wp-critical); }
+        .alert-card.warning .alert-title { color: var(--wp-high); }
+        .alert-card.info .alert-title { color: var(--wp-elevated); }
+        .alert-badge { font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.05em; }
+        .alert-card.urgent .alert-badge { background: var(--wp-critical); color: #fff; }
+        .alert-card.warning .alert-badge { background: var(--wp-high); color: #fff; }
+        .alert-card.info .alert-badge { background: var(--wp-elevated); color: #fff; }
+
+        /* ---------- Priority badges ---------- */
+        .priority-badge { font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.05em; }
+        .priority-badge.high { background: var(--wp-critical); }
+        .priority-badge.medium { background: var(--wp-high); }
+        .priority-badge.low { background: var(--wp-elevated); }
+
+        /* ---------- Source badge / links ---------- */
+        .source-badge { background: var(--wp-ink); color: #fff; font-family: 'Inter', sans-serif; }
+        .reading-link {
+            background: var(--wp-accent-2);
+            color: #fff;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+        }
+        .reading-link:hover { background: #4f46e5; color: #fff; }
+
+        /* ---------- Chart + trending ---------- */
+        .chart-container {
+            background: var(--wp-surface-2);
+            border: 1px solid var(--wp-hairline);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            position: relative;
+            height: 320px;
+        }
+        .chart-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--wp-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .analytics-subtitle {
+            margin-top: 0.35rem;
+            color: var(--wp-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            max-width: 54ch;
+        }
+        .analytics-subtitle strong { color: var(--wp-ink); font-weight: 600; }
+        .analytics-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .analytics-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 0.85rem;
+            background: var(--wp-surface-2);
+            border: 1px solid var(--wp-hairline);
+            border-radius: 999px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--wp-ink);
+        }
+        .analytics-pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 1.25rem;
+        }
+        @media (max-width: 900px) {
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+        .analytics-card {
+            background: var(--wp-surface);
+            border: 1px solid var(--wp-hairline);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-xs);
+        }
+        .analytics-card-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            margin-bottom: 1rem;
+        }
+        .analytics-card-header h3 {
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+            color: var(--wp-ink);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .analytics-card-hint {
+            color: var(--wp-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+        }
+        .timing-btn {
+            background: #fff;
+            color: var(--wp-muted);
+            border: 1px solid var(--wp-divider);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        .timing-btn:hover { border-color: var(--wp-ink); color: var(--wp-ink); }
+        .timing-btn.active { background: var(--wp-ink); border-color: var(--wp-ink); color: #fff; }
+        .legend-label { color: var(--wp-muted); }
+        .toggle-item:hover { background: var(--wp-surface-2); }
+        .toggle-label { color: var(--wp-body); }
+        .toggle-value { color: var(--wp-muted); }
+        .toggle-checkbox { accent-color: var(--wp-accent-2); }
+
+        /* ---------- Saved briefings / search ---------- */
+        .briefing-meta { color: var(--wp-body); }
+        .saved-briefing-card .briefing-title { color: var(--wp-ink); }
+        .saved-briefing-card p { color: var(--wp-muted) !important; }
+
+        /* ---------- Settings page ---------- */
+        .setting-item { background: var(--wp-surface); }
+        .setting-title { color: var(--wp-ink); }
+        .setting-description { color: var(--wp-muted); }
+        .toggle-switch { background: var(--wp-hairline); }
+        .toggle-switch.active { background: var(--wp-accent-2); }
+
+        /* ---------- Profile ---------- */
+        .profile-header { border-bottom: 1px solid var(--wp-hairline); }
+        .profile-info h3 { color: var(--wp-ink); font-family: 'Source Serif 4', Georgia, serif; }
+        .profile-info p { color: var(--wp-muted); }
+        .avatar {
+            background: linear-gradient(135deg, var(--wp-accent) 0%, var(--wp-accent-2) 100%);
+            font-family: 'Source Serif 4', Georgia, serif;
+            letter-spacing: 0;
+        }
+
+        /* ---------- Stat cards (saved page) ---------- */
+        .stat-card-detailed { background: var(--wp-surface); border-left: 3px solid var(--wp-accent-2); }
+        .stat-label-small { color: var(--wp-muted); }
+        .stat-value-large { color: var(--wp-ink); font-family: 'Source Serif 4', Georgia, serif; }
+        .stat-change { color: var(--wp-muted); }
+
+        /* ---------- Footer ---------- */
+        footer {
+            background: var(--wp-page);
+            color: var(--wp-muted);
+            border-top: 1px solid var(--wp-hairline);
+            letter-spacing: 0;
+            font-size: 0.9rem;
+        }
+
+        /* ---------- Toasts, modal, misc ---------- */
+        .toast {
+            background: #fff;
+            border: 1px solid var(--wp-hairline);
+            border-left: 4px solid var(--wp-ink);
+            color: var(--wp-body);
+            box-shadow: var(--shadow-lg);
+        }
+        .toast.success { border-left-color: var(--wp-success); }
+        .toast.error { border-left-color: var(--wp-critical); }
+        .toast.warning { border-left-color: var(--wp-high); }
+        .toast-close { color: var(--wp-muted); }
+
+        .modal { background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(4px); }
+        .modal-content { background: var(--wp-surface); border: 1px solid var(--wp-hairline); box-shadow: var(--shadow-lg); }
+        .modal-header { border-bottom: 1px solid var(--wp-hairline); }
+        .modal-header h2 { color: var(--wp-ink) !important; font-family: 'Source Serif 4', Georgia, serif; }
+        .modal-close { color: var(--wp-muted); }
+
+        /* ---------- Spinner + skeleton ---------- */
+        .spinner { border-color: var(--wp-hairline); border-top-color: var(--wp-accent-2); }
+        .skeleton { background: linear-gradient(90deg, var(--wp-surface-2) 25%, var(--wp-surface-3) 50%, var(--wp-surface-2) 75%); }
+
+        /* ---------- Empty state ---------- */
+        .empty-state { color: var(--wp-muted); }
+        .empty-state h3 { color: var(--wp-ink); font-family: 'Source Serif 4', Georgia, serif; }
+
+        /* ---------- Focus ring ---------- */
+        button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+            outline: 2px solid var(--wp-accent-2);
+            outline-offset: 2px;
+        }
+        button:focus, input:focus, select:focus, textarea:focus { outline: none; }
+
+        /* ---------- Skip link ---------- */
+        .skip-link { background: var(--wp-ink); color: #fff; }
+
+        /* ---------- Media: mobile ---------- */
+        @media (max-width: 768px) {
+            header { padding: 1.25rem 1rem; }
+            header h1 { font-size: 1.6rem; }
+            .input-section, .briefing-section, .form-section, .trending-section { padding: 1.5rem; }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -1087,28 +1553,28 @@
                             <div class="setting-title">Email Notifications</div>
                             <div class="setting-description">Receive briefing updates via email</div>
                         </div>
-                        <button class="toggle-switch active" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle email notifications"></button>
+                        <button class="toggle-switch active" data-setting="emailNotifications" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle email notifications"></button>
                     </div>
                     <div class="setting-item">
                         <div class="setting-label">
                             <div class="setting-title">Alert Notifications</div>
                             <div class="setting-description">Get notified of urgent developments</div>
                         </div>
-                        <button class="toggle-switch active" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle alert notifications"></button>
+                        <button class="toggle-switch active" data-setting="alertNotifications" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle alert notifications"></button>
                     </div>
                     <div class="setting-item">
                         <div class="setting-label">
                             <div class="setting-title">Daily Digest</div>
                             <div class="setting-description">Receive a daily summary of key topics</div>
                         </div>
-                        <button class="toggle-switch" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle daily digest"></button>
+                        <button class="toggle-switch" data-setting="dailyDigest" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle daily digest"></button>
                     </div>
                     <div class="setting-item">
                         <div class="setting-label">
                             <div class="setting-title">Marketing Emails</div>
                             <div class="setting-description">Receive updates about new features</div>
                         </div>
-                        <button class="toggle-switch" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle marketing emails"></button>
+                        <button class="toggle-switch" data-setting="marketingEmails" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle marketing emails"></button>
                     </div>
                 </div>
 
@@ -1119,14 +1585,14 @@
                             <div class="setting-title">Two-Factor Authentication</div>
                             <div class="setting-description">Add extra security to your account</div>
                         </div>
-                        <button class="toggle-switch" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle two-factor authentication"></button>
+                        <button class="toggle-switch" data-setting="twoFactor" onclick="toggleSetting(this)" role="switch" aria-checked="false" aria-label="Toggle two-factor authentication"></button>
                     </div>
                     <div class="setting-item">
                         <div class="setting-label">
                             <div class="setting-title">Data Privacy</div>
                             <div class="setting-description">Keep my briefing data private</div>
                         </div>
-                        <button class="toggle-switch active" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle data privacy"></button>
+                        <button class="toggle-switch active" data-setting="dataPrivacy" onclick="toggleSetting(this)" role="switch" aria-checked="true" aria-label="Toggle data privacy"></button>
                     </div>
                 </div>
 
@@ -1148,9 +1614,21 @@
         const API_ENDPOINT = '/briefing';
         const SAVED_BRIEFINGS_KEY = 'savedBriefingsV2';
         const STARRED_BRIEFINGS_KEY = 'starredBriefings';
-        let trendingChart = null;
-        let currentTrendingData = [];
-        let selectedTiming = 'week';
+        const USER_PROFILE_KEY = 'userProfileV1';
+        const USER_SETTINGS_KEY = 'userSettingsV1';
+        const SOURCE_TYPE_LABELS = {
+            newsapi: 'NewsAPI',
+            gdelt: 'GDELT',
+            rss: 'RSS Feeds',
+            reuters_rss: 'Reuters',
+            bbc_rss: 'BBC',
+            aljazeera_rss: 'Al Jazeera',
+            guardian_rss: 'Guardian',
+            npr_rss: 'NPR',
+        };
+        const CHART_PALETTE = ['#0a2540', '#635bff', '#00a15c', '#d97706', '#c72c2c', '#0284c7', '#7c3aed', '#db2777'];
+        let sourceChart = null;
+        let regionChart = null;
         let currentBriefing = null;
         let savedBriefings = JSON.parse(localStorage.getItem(SAVED_BRIEFINGS_KEY) || '[]');
         let starredBriefings = JSON.parse(localStorage.getItem(STARRED_BRIEFINGS_KEY) || '[]');
@@ -1198,16 +1676,30 @@
 
         function normalizeBriefing(apiBriefing, frequency) {
             const sourceCitations = flattenSourceCitations(apiBriefing);
-            const regions = new Set((apiBriefing.key_developments || []).flatMap(item => item.regions || []));
+            const regionCounts = {};
+            (apiBriefing.key_developments || []).forEach(item => {
+                (item.regions || []).forEach(region => {
+                    if (!region) return;
+                    regionCounts[region] = (regionCounts[region] || 0) + 1;
+                });
+            });
+            const outletCounts = {};
+            sourceCitations.forEach(source => {
+                const outlet = source.outlet || 'unknown';
+                outletCounts[outlet] = (outletCounts[outlet] || 0) + 1;
+            });
             return {
                 id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
                 area: apiBriefing.focus,
                 frequency,
                 generatedAt: apiBriefing.generated_at,
+                sourceBreakdown: apiBriefing.source_breakdown || {},
+                regionCounts,
+                outletCounts,
                 stats: {
                     articles: apiBriefing.article_count || 0,
                     sources: sourceCitations.length,
-                    regions: regions.size,
+                    regions: Object.keys(regionCounts).length,
                     alerts: (apiBriefing.priority_alerts || []).length
                 },
                 alerts: (apiBriefing.priority_alerts || []).map(alert => ({
@@ -1342,129 +1834,171 @@
             return html;
         }
 
-        function extractKeywords(data) {
-            const text = [
-                data.area,
-                ...data.keyDevelopments.map(item => `${item.title} ${item.content}`),
-                ...data.emergingTensions.map(item => `${item.actors} ${item.description}`)
-            ].join(' ');
-            const frequencies = {};
-            text.toLowerCase().split(/\s+/).forEach(word => {
-                const cleaned = word.replace(/[^a-z0-9-]/g, '');
-                if (cleaned.length < 5) return;
-                frequencies[cleaned] = (frequencies[cleaned] || 0) + 1;
-            });
-            return Object.entries(frequencies).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([word]) => word);
+        function topEntries(map, limit = 8) {
+            return Object.entries(map || {})
+                .filter(([, value]) => value > 0)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, limit);
         }
 
-        function generateTimeSeriesData(topic, timing) {
-            const intervals = timing === 'day' ? 24 : timing === 'week' ? 7 : 30;
-            let baseValue = topic.length * 3;
-            return Array.from({ length: intervals }, (_, index) => {
-                baseValue += (index % 3) + 2;
-                return baseValue + ((index + topic.length) % 5) * 4;
-            });
+        function formatSourceLabel(rawKey) {
+            if (SOURCE_TYPE_LABELS[rawKey]) return SOURCE_TYPE_LABELS[rawKey];
+            return rawKey.replace(/_/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase());
         }
 
-        function generateTrendData(topics) {
-            const colors = ['#5a8dd9', '#00d4ff', '#00ffcc', '#ff6b9d', '#ffb366', '#66ff99'];
-            return topics.map((topic, index) => ({
-                label: topic.charAt(0).toUpperCase() + topic.slice(1),
-                data: generateTimeSeriesData(topic, selectedTiming),
-                borderColor: colors[index % colors.length],
-                backgroundColor: `${colors[index % colors.length]}20`,
-                borderWidth: 2.5,
-                fill: false,
-                pointRadius: 4,
-                pointBackgroundColor: colors[index % colors.length],
-                pointBorderColor: '#fff',
-                pointBorderWidth: 1.5,
-                pointHoverRadius: 6,
-                hidden: index > 4
-            }));
+        function destroyAnalyticsCharts() {
+            if (sourceChart) { sourceChart.destroy(); sourceChart = null; }
+            if (regionChart) { regionChart.destroy(); regionChart = null; }
         }
 
-        function getTimeLabels(timing) {
-            if (timing === 'day') return Array.from({ length: 24 }, (_, i) => `${i}:00`);
-            if (timing === 'week') return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            return Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`);
-        }
-
-        function initChart(containerId, datasets) {
-            const ctx = document.getElementById(containerId);
+        function renderSourceChart(breakdown, outletCounts) {
+            const ctx = document.getElementById('sourceChart');
             if (!ctx) return;
-            if (trendingChart) trendingChart.destroy();
-            trendingChart = new Chart(ctx, {
-                type: 'line',
-                data: { labels: getTimeLabels(selectedTiming), datasets },
+            const useBreakdown = Object.keys(breakdown || {}).length > 0;
+            const entries = useBreakdown
+                ? topEntries(breakdown, 6).map(([key, value]) => [formatSourceLabel(key), value])
+                : topEntries(outletCounts, 6);
+            if (!entries.length) {
+                ctx.parentElement.innerHTML = '<div class="chart-empty">No source data available yet.</div>';
+                return;
+            }
+            const labels = entries.map(([label]) => label);
+            const values = entries.map(([, value]) => value);
+            sourceChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: labels.map((_, i) => CHART_PALETTE[i % CHART_PALETTE.length]),
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                        hoverOffset: 8,
+                    }],
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { display: false } },
+                    cutout: '62%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#3c4257',
+                                font: { family: 'Inter, sans-serif', size: 12, weight: '500' },
+                                padding: 14,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                            },
+                        },
+                        tooltip: {
+                            backgroundColor: '#0a2540',
+                            padding: 12,
+                            titleFont: { family: 'Inter', weight: '600' },
+                            bodyFont: { family: 'Inter' },
+                        },
+                    },
+                },
+            });
+        }
+
+        function renderRegionChart(regionCounts) {
+            const ctx = document.getElementById('regionChart');
+            if (!ctx) return;
+            const entries = topEntries(regionCounts, 8);
+            if (!entries.length) {
+                ctx.parentElement.innerHTML = '<div class="chart-empty">No regional tags detected in this briefing.</div>';
+                return;
+            }
+            const labels = entries.map(([label]) => label);
+            const values = entries.map(([, value]) => value);
+            regionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Mentions in Key Developments',
+                        data: values,
+                        backgroundColor: '#635bff',
+                        borderRadius: 6,
+                        barThickness: 18,
+                    }],
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0a2540',
+                            padding: 12,
+                            titleFont: { family: 'Inter', weight: '600' },
+                            bodyFont: { family: 'Inter' },
+                        },
+                    },
                     scales: {
-                        y: { beginAtZero: true, ticks: { color: '#ecf0f8' }, grid: { color: 'rgba(93,106,130,0.2)' } },
-                        x: { ticks: { color: '#ecf0f8' }, grid: { display: false } }
-                    }
-                }
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#697386',
+                                font: { family: 'Inter', size: 11 },
+                            },
+                            grid: { color: 'rgba(10, 37, 64, 0.08)' },
+                        },
+                        y: {
+                            ticks: {
+                                color: '#1a1f36',
+                                font: { family: 'Inter', size: 12, weight: '500' },
+                            },
+                            grid: { display: false },
+                        },
+                    },
+                },
             });
-        }
-
-        function updateToggleVisibility(datasets) {
-            datasets.forEach((dataset, index) => {
-                const checkbox = document.getElementById(`topic-${index}`);
-                if (checkbox) checkbox.checked = !dataset.hidden;
-            });
-        }
-
-        function toggleTopic(index) {
-            if (!trendingChart?.data.datasets[index]) return;
-            trendingChart.data.datasets[index].hidden = !trendingChart.data.datasets[index].hidden;
-            trendingChart.update();
-        }
-
-        function updateTiming(timing, button) {
-            selectedTiming = timing;
-            document.querySelectorAll('.timing-btn').forEach(btn => btn.classList.remove('active'));
-            if (button) button.classList.add('active');
-            const updatedData = generateTrendData(currentTrendingData);
-            initChart('trendingChart', updatedData);
-            updateToggleVisibility(updatedData);
         }
 
         function addTrendingSection(html, data) {
-            currentTrendingData = extractKeywords(data);
-            const datasets = generateTrendData(currentTrendingData);
-            let trendingHtml = `
-                <section class="trending-section">
-                    <h2>Topic Trends & Popularity Analysis</h2>
-                    <div class="chart-controls">
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <label style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">Timeframe</label>
-                            <div class="timing-selector">
-                                <button type="button" class="timing-btn ${selectedTiming === 'day' ? 'active' : ''}" onclick="updateTiming('day', this)">Hourly</button>
-                                <button type="button" class="timing-btn ${selectedTiming === 'week' ? 'active' : ''}" onclick="updateTiming('week', this)">Weekly</button>
-                                <button type="button" class="timing-btn ${selectedTiming === 'month' ? 'active' : ''}" onclick="updateTiming('month', this)">Monthly</button>
-                            </div>
+            const totalSources = Object.values(data.sourceBreakdown || {}).reduce((s, v) => s + v, 0)
+                || Object.values(data.outletCounts || {}).reduce((s, v) => s + v, 0);
+            const analyticsHtml = `
+                <section class="trending-section" aria-label="Briefing analytics">
+                    <div class="analytics-header">
+                        <div>
+                            <h2>Coverage Analytics</h2>
+                            <p class="analytics-subtitle">Live breakdown of the ${data.stats.articles} article${data.stats.articles === 1 ? '' : 's'} aggregated for <strong>${escapeHtml(data.area)}</strong>.</p>
+                        </div>
+                        <div class="analytics-pills">
+                            <span class="analytics-pill"><span class="analytics-pill-dot" style="background:#0a2540"></span>${data.stats.articles} articles</span>
+                            <span class="analytics-pill"><span class="analytics-pill-dot" style="background:#635bff"></span>${data.stats.regions} regions</span>
+                            <span class="analytics-pill"><span class="analytics-pill-dot" style="background:#00a15c"></span>${totalSources} citations</span>
                         </div>
                     </div>
-                    <div class="chart-container"><canvas id="trendingChart"></canvas></div>
-                    <div>
-                        <div class="legend-label">Toggle Topics to Display</div>
-                        <div class="topic-toggles">
-            `;
-            currentTrendingData.forEach((topic, index) => {
-                trendingHtml += `
-                    <div class="toggle-item">
-                        <input type="checkbox" id="topic-${index}" class="toggle-checkbox" ${index <= 4 ? 'checked' : ''} onchange="toggleTopic(${index})">
-                        <label for="topic-${index}" class="toggle-label">${escapeHtml(topic)}</label>
-                        <span class="toggle-value">${10 + index * 4}%</span>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="analytics-card-header">
+                                <h3>Source Pipeline</h3>
+                                <span class="analytics-card-hint">Where the aggregated articles came from</span>
+                            </div>
+                            <div class="chart-container"><canvas id="sourceChart"></canvas></div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-card-header">
+                                <h3>Regional Coverage</h3>
+                                <span class="analytics-card-hint">Regions mentioned across key developments</span>
+                            </div>
+                            <div class="chart-container"><canvas id="regionChart"></canvas></div>
+                        </div>
                     </div>
-                `;
-            });
-            trendingHtml += `</div></div></section>`;
-            setTimeout(() => initChart('trendingChart', datasets), 100);
-            return trendingHtml + html;
+                </section>
+            `;
+            setTimeout(() => {
+                destroyAnalyticsCharts();
+                renderSourceChart(data.sourceBreakdown, data.outletCounts);
+                renderRegionChart(data.regionCounts);
+            }, 50);
+            return analyticsHtml + html;
         }
 
         function showToast(message, type = 'info', duration = 3000) {
@@ -1566,9 +2100,96 @@
             if (pageName === 'saved') renderSavedBriefings();
         }
 
+        function loadUserSettings() {
+            try {
+                return JSON.parse(localStorage.getItem(USER_SETTINGS_KEY) || '{}') || {};
+            } catch (err) {
+                return {};
+            }
+        }
+
+        function saveUserSettings(settings) {
+            try {
+                localStorage.setItem(USER_SETTINGS_KEY, JSON.stringify(settings));
+            } catch (err) {
+                // ignore quota errors
+            }
+        }
+
         function toggleSetting(button) {
             const isActive = button.classList.toggle('active');
             button.setAttribute('aria-checked', isActive.toString());
+            const key = button.dataset.setting;
+            if (key) {
+                const settings = loadUserSettings();
+                settings[key] = isActive;
+                saveUserSettings(settings);
+            }
+        }
+
+        function applySavedSettings() {
+            const settings = loadUserSettings();
+            document.querySelectorAll('.toggle-switch[data-setting]').forEach(button => {
+                const key = button.dataset.setting;
+                if (!(key in settings)) return;
+                const shouldBeActive = Boolean(settings[key]);
+                button.classList.toggle('active', shouldBeActive);
+                button.setAttribute('aria-checked', shouldBeActive.toString());
+            });
+        }
+
+        const DEFAULT_PROFILE = {
+            firstName: 'Jane',
+            lastName: 'Doe',
+            emailAddress: 'jane.doe@example.com',
+            organization: 'Policy Research Institute',
+            userBio: 'International policy analyst with focus on geopolitical developments and regional dynamics.',
+        };
+
+        function loadUserProfile() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(USER_PROFILE_KEY) || 'null');
+                if (!stored || typeof stored !== 'object') return { ...DEFAULT_PROFILE };
+                return { ...DEFAULT_PROFILE, ...stored };
+            } catch (err) {
+                return { ...DEFAULT_PROFILE };
+            }
+        }
+
+        function saveUserProfile(profile) {
+            try {
+                localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
+            } catch (err) {
+                // ignore quota errors
+            }
+        }
+
+        function initialsFor(profile) {
+            const first = (profile.firstName || '').trim();
+            const last = (profile.lastName || '').trim();
+            const combined = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+            if (combined) return combined;
+            const email = (profile.emailAddress || '').trim();
+            return email ? email.charAt(0).toUpperCase() : '?';
+        }
+
+        function applyProfileToUi(profile) {
+            const fields = ['firstName', 'lastName', 'emailAddress', 'organization', 'userBio'];
+            fields.forEach(field => {
+                const el = document.getElementById(field);
+                if (el && profile[field] !== undefined) el.value = profile[field];
+            });
+            const profileName = document.getElementById('profileName');
+            if (profileName) {
+                profileName.textContent = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'Your Name';
+            }
+            const profileEmail = document.getElementById('profileEmail');
+            if (profileEmail) {
+                profileEmail.textContent = profile.emailAddress || '';
+            }
+            document.querySelectorAll('.avatar').forEach(avatar => {
+                avatar.textContent = initialsFor(profile);
+            });
         }
 
         function renderSavedBriefings() {
@@ -1709,16 +2330,23 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            applyProfileToUi(loadUserProfile());
+            applySavedSettings();
+
             const accountForm = document.getElementById('accountForm');
             if (accountForm) {
                 accountForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    const firstName = document.getElementById('firstName').value;
-                    const lastName = document.getElementById('lastName').value;
-                    const email = document.getElementById('emailAddress').value;
-                    document.getElementById('profileName').textContent = `${firstName} ${lastName}`;
-                    document.getElementById('profileEmail').textContent = email;
-                    showToast('Profile updated successfully', 'success');
+                    const profile = {
+                        firstName: document.getElementById('firstName').value.trim(),
+                        lastName: document.getElementById('lastName').value.trim(),
+                        emailAddress: document.getElementById('emailAddress').value.trim(),
+                        organization: document.getElementById('organization').value.trim(),
+                        userBio: document.getElementById('userBio').value.trim(),
+                    };
+                    saveUserProfile(profile);
+                    applyProfileToUi(profile);
+                    showToast('Profile saved — it will persist after refresh.', 'success');
                 });
             }
             renderSavedBriefings();

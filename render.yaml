@@ -16,10 +16,18 @@ services:
       - key: HUGGINGFACE_API_KEY
         sync: false
       - key: MAX_ARTICLES_PER_SOURCE
-        value: "25"
+        value: "15"
       - key: DEDUP_SIMILARITY_THRESHOLD
         value: "0.85"
       - key: RELEVANCE_SIMILARITY_THRESHOLD
-        value: "0.35"
+        value: "0.30"
       - key: HOURS_LOOKBACK
         value: "24"
+      - key: SYNTHESIS_MODEL
+        value: "claude-haiku-4-5"
+      - key: CONTEXT_MODEL
+        value: "claude-haiku-4-5"
+      - key: CACHE_TTL_MINUTES
+        value: "15"
+      - key: CONTEXT_ENRICHMENT_LIMIT
+        value: "4"
